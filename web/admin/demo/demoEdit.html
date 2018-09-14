@@ -1,0 +1,46 @@
+<div style="text-align:center">
+    <h1>Demo Edit</h1>
+    <form id="form" action="${ctx}/admin/demo/edit" method="post">
+        <input type="hidden" name="id" value="${RequestParameters.id}"/>
+        <table style="margin:auto">
+            <tr>
+                <td style="width: 15%;">
+                    <label >aString：</label>
+                </td>
+                <td>
+                    <input type="text" name="aString"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>aInteger：</label>
+                </td>
+                <td>
+                    <input type="text" name="aInteger"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>aDouble：</label>
+                </td>
+                <td>
+                    <input type="text" name="aDouble"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>aLong：</label>
+                </td>
+                <td>
+                    <input type="text" name="aLong"/>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<script>
+    $(function () {
+        console.log('edit html loading completed ')
+    })
+</script>

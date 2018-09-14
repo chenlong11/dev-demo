@@ -1,0 +1,53 @@
+<html>
+<head>
+    <title>列表</title>
+[#include "/admin/include/adminHeader.html"/]
+</head>
+<body>
+<h1>Demo List</h1>
+
+<div>
+    <a href="javascript:edit()">添加</a>
+</div>
+
+<table>
+
+</table>
+
+[#include "/admin/include/adminScript.html"/]
+<script>
+
+    function edit(id) {
+        id = id || '';
+        openDialog({
+            url: '${ctx}/admin/demo/edit/' + id,
+            params: {},//非必传参数
+            btn: ['确定','关闭'],
+            yes: function(index, layero){
+                save();
+            }
+        });
+    }
+
+    function save() {
+        $('#form').ajaxSubmit({
+            dataType:'json',
+            success: function (data) {
+                if(data.status!=1){
+                    errMsg();
+                }
+                sucessMsg(function () {
+                    closeAllDialog();
+                    query();
+                });
+            }
+        })
+    }
+
+    function query() {
+        console.log('query');
+
+    }
+</script>
+</body>
+</html>

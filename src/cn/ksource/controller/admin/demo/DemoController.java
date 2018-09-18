@@ -65,4 +65,11 @@ public class DemoController {
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
+    @GetMapping("/test")
+    @ResponseBody
+    public String test(@PathVariable(required = false) String id){
+        return "test";
+    }
+
+
 }

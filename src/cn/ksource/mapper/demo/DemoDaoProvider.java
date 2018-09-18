@@ -10,24 +10,25 @@ import org.apache.ibatis.jdbc.SQL;
  */
 public class DemoDaoProvider {
 
-    public String DemoDaoProvider(DemoExample example) {
+    public String selectByExample(DemoExample example) {
         SQL sql = new SQL();
-        sql.SET("id,a_string,a_integer,a_double,a_long,create_date");
+        sql.SELECT("id,a_string,a_integer,a_double,a_long,create_date");
         sql.FROM("demo");
         if (example.getAString() != null) {
-            sql.WHERE(" a_string = #{aString,jdbcType=VARCHAR} ");
+            sql.WHERE(" a_string like '%' || #{aString,jdbcType=VARCHAR} || '%'");
         }
         if (example.getAInteger() != null) {
-            sql.SET("a_integer = #{aInteger,jdbcType=INTEGER}");
+            sql.WHERE("a_integer = #{aInteger,jdbcType=INTEGER}");
         }
 
         if (example.getADouble() != null) {
-            sql.SET("a_double = #{aDouble,jdbcType=DECIMAL}");
+            sql.WHERE("a_double = #{aDouble,jdbcType=DECIMAL}");
         }
 
         if (example.getALong() != null) {
-            sql.SET("a_long = #{aLong,jdbcType=BIGINT}");
+            sql.WHERE("a_long = #{aLong,jdbcType=BIGINT}");
         }
+        sql.ORDER_BY("create_date desc");
         return sql.toString();
     }
 

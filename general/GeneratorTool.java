@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 代码生成类
  * Created by chenlong
  * Date：2018/9/13
  * time：16:58

@@ -3,19 +3,19 @@ package cn.ksource.domain.demo;
 public class Demo {
     private String id;
 
-    private String aString;
+    private String demoString;
 
-    private Integer aInteger;
+    private Integer demoInt;
 
-    private Double aDouble;
+    private Double demoDouble;
 
-    private Long aLong;
+    private Long demoLong;
 
     private Integer createDate;
 
     private Integer createTime;
 
-    private Short statu;
+    private Short state;
 
     public String getId() {
         return id;
@@ -25,36 +25,36 @@ public class Demo {
         this.id = id == null ? null : id.trim();
     }
 
-    public String getaString() {
-        return aString;
+    public String getDemoString() {
+        return demoString;
     }
 
-    public void setaString(String aString) {
-        this.aString = aString == null ? null : aString.trim();
+    public void setDemoString(String demoString) {
+        this.demoString = demoString == null ? null : demoString.trim();
     }
 
-    public Integer getaInteger() {
-        return aInteger;
+    public Integer getDemoInt() {
+        return demoInt;
     }
 
-    public void setaInteger(Integer aInteger) {
-        this.aInteger = aInteger;
+    public void setDemoInt(Integer demoInt) {
+        this.demoInt = demoInt;
     }
 
-    public Double getaDouble() {
-        return aDouble;
+    public Double getDemoDouble() {
+        return demoDouble;
     }
 
-    public void setaDouble(Double aDouble) {
-        this.aDouble = aDouble;
+    public void setDemoDouble(Double demoDouble) {
+        this.demoDouble = demoDouble;
     }
 
-    public Long getaLong() {
-        return aLong;
+    public Long getDemoLong() {
+        return demoLong;
     }
 
-    public void setaLong(Long aLong) {
-        this.aLong = aLong;
+    public void setDemoLong(Long demoLong) {
+        this.demoLong = demoLong;
     }
 
     public Integer getCreateDate() {
@@ -73,11 +73,11 @@ public class Demo {
         this.createTime = createTime;
     }
 
-    public Short getStatu() {
-        return statu;
+    public Short getState() {
+        return state;
     }
 
-    public void setStatu(Short statu) {
-        this.statu = statu;
+    public void setState(Short state) {
+        this.state = state;
     }
 }

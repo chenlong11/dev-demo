@@ -1,3 +1,4 @@
+import org.junit.Test;
 import org.mybatis.generator.api.MyBatisGenerator;
 import org.mybatis.generator.config.Configuration;
 import org.mybatis.generator.config.xml.ConfigurationParser;
@@ -27,13 +28,10 @@ public class GeneratorTool {
         myBatisGenerator.generate(null);
     }
 
-    public static void main(String[] args) throws Exception {
-        try {
-            GeneratorTool generatorTool = new GeneratorTool();
-            generatorTool.generator();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    @Test
+    public void generatorTest() throws Exception {
+        GeneratorTool generatorTool = new GeneratorTool();
+        generatorTool.generator();
     }
 
 }

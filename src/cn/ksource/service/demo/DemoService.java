@@ -3,6 +3,8 @@ package cn.ksource.service.demo;
 import cn.ksource.domain.demo.DemoDto;
 import cn.ksource.domain.demo.DemoExample;
 
+import java.util.List;
+
 /**
  * Created by chenlong
  * Date：2018/9/13
@@ -14,6 +16,10 @@ public interface DemoService {
 
     void updateDemo(DemoDto demoDto);
 
-    void selectByExample(DemoExample demoExample);
+    List<DemoDto> selectByExample(DemoExample demoExample);
+
+    void deleteDemoById(String id);
+
+    DemoDto getDemoById(String id);
 
 }

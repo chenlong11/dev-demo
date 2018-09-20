@@ -1143,15 +1143,15 @@
         var tel = /^\d{3,4}-?\d{7,9}$/;
         return this.optional(element) || (tel.test(value) || mobile.test(value));
     }, "请正确填写您的联系电话");
-    $.validator.addMethod("isAge", function (value, element) {
+    $.validator.addMethod("age", function (value, element) {
         var reg = /^(1|[1-9]{1,2}|100)$/;
         return this.optional(element) || (reg.test(value));
     }, "请正确填写您的年龄");
 
-    $.validator.addMethod("isFloat", function (value, element) {
-            var reg = /^(|[0-9][0-9]{0,7})(\.[0-9]{1,2})?$/;
+    $.validator.addMethod("double", function (value, element) {
+            var reg = /^(|[0-9][0-9]{0,7})(\.[0-9]{2})?$/;
             return this.optional(element) || (reg.test(value));
-    }, "请正确数字,整数位不能超过8位，小数位不能超过2位！");
+    }, "请输入正确数字,整数位不超过8位，小数位2位！");
 
     /**
      * 验证是否字母数字
@@ -1174,7 +1174,7 @@
     /**
      * 邮政编码验证
      */
-    $.validator.addMethod("isZipCode", function (value, element) {
+    $.validator.addMethod("zipCode", function (value, element) {
         var reg = /^[0-9]{6}$/;
         return this.optional(element) || (reg.test(value));
     }, "请正确填写您的邮政编码");
@@ -1182,27 +1182,13 @@
     /**
      * 金额验证
      */
-    $.validator.addMethod("isAmount", function (value, element) {
+    $.validator.addMethod("amount", function (value, element) {
         var reg = /(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9]\.[0-9]([0-9])?$)/;
         return this.optional(element) || (reg.test(value));
     }, "请填写正确的金额");
-    /**
-     * 18位身份证号
-     */
-    /*$.validator.addMethod("isIdCard", function (value, element) {
-        /!*var reg = /[1-9]([0-9]{14}|[0-9]{17})$/;*!/
-        var reg=/^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/;
-        return this.optional(element) || (reg.test(value));
-    }, "请填写正确的身份证号");
-*/
-    /*$.validator.addMethod("isIdCard", function (value, element) {
-
-        var reg=/^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/;
-        return this.optional(element) || (reg.test(value));
-    }, "请填写正确的身份证号");*/
 
 
-    $.validator.addMethod("isIdCard", function (value, element) {
+    $.validator.addMethod("IdCard", function (value, element) {
 
         //系数
         var coefficient = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
@@ -1229,17 +1215,9 @@
     }, "请填写正确的身份证号");
 
     /**
-     * 真实姓名
-     */
-    $.validator.addMethod("isZSXM", function (value, element) {
-        var reg = /^([\u4e00-\u9fa5]+|[a-zA-Z0-9]+)$/;
-        return this.optional(element) || (reg.test(value));
-    }, "请填写正确的姓名");
-    /**
      * 帐号
      */
-    $.validator.addMethod("isAccount", function (value, element) {
-        //var reg = /^[a-zA-Z][a-zA-Z0-9_]{4,15}$/;
+    $.validator.addMethod("account", function (value, element) {
         var reg = /^[a-zA-Z0-9_]{5,16}$/;
         return this.optional(element) || (reg.test(value));
     }, "请填写正确的帐号");

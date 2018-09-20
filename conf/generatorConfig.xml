@@ -39,7 +39,7 @@
                enableDeleteByExample="false"
                enableSelectByExample="false"
                selectByExampleQueryId="false">
-            <columnOverride column="a_double" javaType="Double" />
+            <columnOverride column="demo_double" javaType="Double" />
         </table>
     </context>
 </generatorConfiguration>

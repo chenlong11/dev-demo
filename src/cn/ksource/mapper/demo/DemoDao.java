@@ -1,7 +1,11 @@
 package cn.ksource.mapper.demo;
 
+import cn.ksource.domain.demo.DemoDto;
 import cn.ksource.domain.demo.DemoExample;
 import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.annotations.Update;
+
+import java.util.List;
 
 /**
  * Created by chenlong
@@ -11,6 +15,9 @@ import org.apache.ibatis.annotations.SelectProvider;
 public interface DemoDao extends DemoMapper {
 
     @SelectProvider(type=DemoDaoProvider.class, method="selectByExample")
-    void selectByExample(DemoExample demoExample);
+    List<DemoDto> selectByExample(DemoExample demoExample);
+
+    @Update({"update demo set state = 0 where id = #{id} "})
+    void deleteDemoById(String id);
 
 }

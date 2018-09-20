@@ -1,18 +1,19 @@
 package cn.ksource.controller.admin.demo;
 
 import cn.hutool.core.util.StrUtil;
-import cn.ksource.domain.demo.Demo;
+import cn.ksource.controller.base.BaseController;
 import cn.ksource.domain.demo.DemoDto;
 import cn.ksource.domain.demo.DemoExample;
 import cn.ksource.domain.response.ResponseResult;
 import cn.ksource.service.demo.DemoService;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.ServletRequest;
+import java.util.List;
 
 /**
  * Created by chenlong
@@ -22,7 +23,7 @@ import javax.servlet.ServletRequest;
 
 @Controller
 @RequestMapping("/admin/demo")
-public class DemoController {
+public class DemoController extends BaseController {
 
     @Autowired
     private DemoService demoService;
@@ -32,14 +33,22 @@ public class DemoController {
         return "/admin/demo/demoList";
     }
 
-    @GetMapping("/list")
-    public ResponseResult postList(DemoExample demoExample) {
-        demoService.selectByExample(demoExample);
-        return new ResponseResult();
+    @PostMapping("/list")
+    @ResponseBody
+    public ResponseResult postList(DemoExample demoExample, int curPage,int pageSize) {
+        PageHelper.startPage(curPage,pageSize);
+        List<DemoDto> demoDtos = demoService.selectByExample(demoExample);
+        PageInfo<DemoDto> pageInfo = new PageInfo<>(demoDtos);
+        return new ResponseResult(pageInfo);
     }
 
     @GetMapping(value = {"/edit","/edit/{id}"})
-    public String getDemoEdit(@PathVariable(required = false) String id){
+    public String getDemoEdit(@PathVariable(required = false) String id, Model model){
+        DemoDto demoDto = new DemoDto();
+        if (StrUtil.isNotBlank(id)) {
+            demoDto = demoService.getDemoById(id);
+        }
+        model.addAttribute("info", demoDto);
         return "/admin/demo/demoEdit";
     }
 
@@ -54,22 +63,11 @@ public class DemoController {
         return new ResponseResult();
     }
 
-    @PostMapping("/detail/{id}")
-    public ResponseEntity postDemo(ServletRequest request) {
-        Demo demo = new Demo();
-        return new ResponseEntity(HttpStatus.CREATED);
-    }
-
-    @DeleteMapping("/del/{id}")
-    public ResponseEntity delDemo(ServletRequest request) {
-        return new ResponseEntity(HttpStatus.NO_CONTENT);
-    }
-
-    @GetMapping("/test")
+    @PostMapping("/del/{id}")
     @ResponseBody
-    public String test(@PathVariable(required = false) String id){
-        return "test";
+    public ResponseResult delDemo(@PathVariable String id) {
+        demoService.deleteDemoById(id);
+        return new ResponseResult();
     }
-
 
 }

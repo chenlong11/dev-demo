@@ -2,7 +2,7 @@
     分页方法
  */
 function paging(options) {
-    loading($("#" + options["id"]));
+    //loading($("#" + options["id"]));
     //默认参数
     var defaults = {"curr": 1, "class": "display_form common_list_table", "style": ""};
     //获取调用控件ID
@@ -40,25 +40,21 @@ function paging(options) {
         });
         $("#" + opts["table_id"]).append($tr);
     }
-
     //调用异步分页
     asynchronous_page(opts);
 }
 
 function asynchronous_page(opts) {
-    var param = $.extend({}, {page: opts.curr || 1, pageSize: opts.pageSize}, opts.param || {});
-
+    var param = $.extend({}, {curPage: opts.curr || 1, pageSize: opts.pageSize}, opts.param || {});
     $.post(opts.url, param, function (res) {
         //清空上一页数据
         $("#" + opts["table_id"]).find("tr:gt(0)").remove();
         //分页内容组装
-        if (("content" in res) && res.content.length > 0) {
-            $.each(res.content, function (i, data) {
+        if (("data" in res) && res.data.list.length > 0) {
+            $.each(res.data.list, function (i, data) {
                 var $tr = $("<tr></tr>");
                 $.each(opts.columns, function (j, item) {
-
                     var $td = $("<td></td>");
-
                     if ("class" in item) {//td class
                         $td.addClass(item["class"])
                     }
@@ -84,7 +80,7 @@ function asynchronous_page(opts) {
         //显示分页
         laypage({
             cont: opts["page_id"], //容器。值支持id名、原生dom对象，jquery对象。【如该容器为】：<div id="page1"></div>
-            pages: res.totalPages, //通过后台拿到的总页数
+            pages: res.data.lastPage, //通过后台拿到的总页数
             curr: opts.curr || 1, //当前页
             skip: true,
             jump: function (obj, first) { //触发分页后的回调
@@ -94,7 +90,7 @@ function asynchronous_page(opts) {
                 }
             }
         });
-        loaded($("#" + opts.id));
+        //loaded($("#" + opts.id));
     }, 'json');
 }
 

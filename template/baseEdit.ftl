@@ -1,39 +1,17 @@
 <div style="text-align:center">
-    <h1>Demo Edit</h1>
-    <form id="form" action="${ctx}/admin/demo/edit/${info.id}" method="post">
+    <h1>${domainName} Edit</h1>
+    <form id="form" action="${r'${ctx}'}${controllerMapping}/${r'${info.id}'}" method="post">
         <table style="margin:auto">
+            [#list domainColumns as column]
             <tr>
                 <td style="width: 15%;">
                     <label >String：</label>
                 </td>
                 <td>
-                    <input type="text" name="demoString" value="${info.demoString}"/>
+                    <input type="text" name="demoString" value="${r'${info.demoString}'}"/>
                 </td>
             </tr>
-            <tr>
-                <td>
-                    <label>Integer：</label>
-                </td>
-                <td>
-                    <input type="text" name="demoInt" value="${info.demoInt}"/>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label>Double：</label>
-                </td>
-                <td>
-                    <input type="text" name="demoDouble" value="${info.demoDouble}"/>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label>Long：</label>
-                </td>
-                <td>
-                    <input type="text" name="demoLong" value="${info.demoLong}"/>
-                </td>
-            </tr>
+            [/#list]
         </table>
     </form>
 </div>

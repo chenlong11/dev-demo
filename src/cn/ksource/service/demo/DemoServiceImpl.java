@@ -10,6 +10,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Created by chenlong
  * Date：2018/9/13
@@ -28,7 +30,7 @@ public class DemoServiceImpl implements DemoService{
         demo.setId(RandomUtil.simpleUUID());
         demo.setCreateDate(DateUtilSupport.getCurDate());
         demo.setCreateTime(DateUtilSupport.getCurTime());
-        demo.setStatu(Short.valueOf("1"));
+        demo.setState(Short.valueOf("1"));
         demoDao.insert(demo);
     }
 
@@ -40,8 +42,21 @@ public class DemoServiceImpl implements DemoService{
     }
 
     @Override
-    public void selectByExample(DemoExample demoExample) {
-        demoDao.selectByExample(demoExample);
+    public List<DemoDto> selectByExample(DemoExample demoExample) {
+        return demoDao.selectByExample(demoExample);
+    }
+
+    @Override
+    public void deleteDemoById(String id) {
+        demoDao.deleteDemoById(id);
+    }
+
+    @Override
+    public DemoDto getDemoById(String id) {
+        Demo demo = demoDao.selectByPrimaryKey(id);
+        DemoDto demoDto = new DemoDto();
+        BeanUtils.copyProperties(demo, demoDto);
+        return demoDto;
     }
 
 

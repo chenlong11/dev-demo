@@ -19,14 +19,14 @@ public interface DemoMapper {
     int deleteByPrimaryKey(String id);
 
     @Insert({
-        "insert into demo (id, a_string, ",
-        "a_integer, a_double, ",
-        "a_long, create_date, ",
-        "create_time, statu)",
-        "values (#{id,jdbcType=VARCHAR}, #{aString,jdbcType=VARCHAR}, ",
-        "#{aInteger,jdbcType=INTEGER}, #{aDouble,jdbcType=DECIMAL}, ",
-        "#{aLong,jdbcType=BIGINT}, #{createDate,jdbcType=INTEGER}, ",
-        "#{createTime,jdbcType=INTEGER}, #{statu,jdbcType=SMALLINT})"
+        "insert into demo (id, demo_string, ",
+        "demo_int, demo_double, ",
+        "demo_long, create_date, ",
+        "create_time, state)",
+        "values (#{id,jdbcType=VARCHAR}, #{demoString,jdbcType=VARCHAR}, ",
+        "#{demoInt,jdbcType=INTEGER}, #{demoDouble,jdbcType=DECIMAL}, ",
+        "#{demoLong,jdbcType=BIGINT}, #{createDate,jdbcType=INTEGER}, ",
+        "#{createTime,jdbcType=INTEGER}, #{state,jdbcType=SMALLINT})"
     })
     int insert(Demo record);
 
@@ -35,19 +35,20 @@ public interface DemoMapper {
 
     @Select({
         "select",
-        "id, a_string, a_integer, a_double, a_long, create_date, create_time, statu",
+        "id, demo_string, demo_int, demo_double, demo_long, create_date, create_time, ",
+        "state",
         "from demo",
         "where id = #{id,jdbcType=VARCHAR}"
     })
     @Results({
         @Result(column="id", property="id", jdbcType=JdbcType.VARCHAR, id=true),
-        @Result(column="a_string", property="aString", jdbcType=JdbcType.VARCHAR),
-        @Result(column="a_integer", property="aInteger", jdbcType=JdbcType.INTEGER),
-        @Result(column="a_double", property="aDouble", jdbcType=JdbcType.DECIMAL),
-        @Result(column="a_long", property="aLong", jdbcType=JdbcType.BIGINT),
+        @Result(column="demo_string", property="demoString", jdbcType=JdbcType.VARCHAR),
+        @Result(column="demo_int", property="demoInt", jdbcType=JdbcType.INTEGER),
+        @Result(column="demo_double", property="demoDouble", jdbcType=JdbcType.DECIMAL),
+        @Result(column="demo_long", property="demoLong", jdbcType=JdbcType.BIGINT),
         @Result(column="create_date", property="createDate", jdbcType=JdbcType.INTEGER),
         @Result(column="create_time", property="createTime", jdbcType=JdbcType.INTEGER),
-        @Result(column="statu", property="statu", jdbcType=JdbcType.SMALLINT)
+        @Result(column="state", property="state", jdbcType=JdbcType.SMALLINT)
     })
     Demo selectByPrimaryKey(String id);
 
@@ -56,13 +57,13 @@ public interface DemoMapper {
 
     @Update({
         "update demo",
-        "set a_string = #{aString,jdbcType=VARCHAR},",
-          "a_integer = #{aInteger,jdbcType=INTEGER},",
-          "a_double = #{aDouble,jdbcType=DECIMAL},",
-          "a_long = #{aLong,jdbcType=BIGINT},",
+        "set demo_string = #{demoString,jdbcType=VARCHAR},",
+          "demo_int = #{demoInt,jdbcType=INTEGER},",
+          "demo_double = #{demoDouble,jdbcType=DECIMAL},",
+          "demo_long = #{demoLong,jdbcType=BIGINT},",
           "create_date = #{createDate,jdbcType=INTEGER},",
           "create_time = #{createTime,jdbcType=INTEGER},",
-          "statu = #{statu,jdbcType=SMALLINT}",
+          "state = #{state,jdbcType=SMALLINT}",
         "where id = #{id,jdbcType=VARCHAR}"
     })
     int updateByPrimaryKey(Demo record);

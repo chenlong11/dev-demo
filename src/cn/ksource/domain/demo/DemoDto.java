@@ -16,11 +16,14 @@ public class DemoDto {
 
     private String id;
 
-    private String aString;
+    private String demoString;
 
-    private Integer aInteger;
+    private Integer demoInt;
 
-    private Double aDouble;
+    private Double demoDouble;
 
-    private Long aLong;
+    private Long demoLong;
+
+    private Long createDate;
+
 }

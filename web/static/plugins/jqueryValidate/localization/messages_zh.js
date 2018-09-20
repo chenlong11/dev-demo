@@ -39,13 +39,12 @@ $.extend( $.validator.messages, {
     isPhone: "请输入正确的的联系方式",
     isStringAndNum: "只能输入英文字母和数字",
     chcharacter: "请输入汉字",
-    isZipCode: "请填写正确的邮政编码",
-    isAmount: "请输入正确的金额",
-    isAccount: "请输入正确的帐号(5-16位非中文字符)",
-    isIdCard:"请输入正确的身份证号码",
-    isZSXM:"请输入正确的姓名",
-    isAge:"请输入正确的年龄",
-    isFloat:"整数位不能超过8位，小数位不能超过2位！"
+    zipCode: "请填写正确的邮政编码",
+    amount: "请输入正确的金额",
+    account: "请输入正确的帐号(5-16位非中文字符)",
+    IdCard:"请输入正确的身份证号码",
+    age:"请输入正确的年龄",
+    double:"整数位不能超过8位，小数位不能超过2位！"
 } );
 return $;
 }));

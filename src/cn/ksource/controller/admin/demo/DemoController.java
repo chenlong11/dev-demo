@@ -38,7 +38,7 @@ public class DemoController extends BaseController {
     public ResponseResult postList(DemoExample demoExample, int curPage,int pageSize) {
         PageHelper.startPage(curPage,pageSize);
         List<DemoDto> demoDtos = demoService.selectByExample(demoExample);
-        PageInfo<DemoDto> pageInfo = new PageInfo<>(demoDtos);
+        PageInfo<DemoDto> pageInfo = new PageInfo<DemoDto>(demoDtos);
         return new ResponseResult(pageInfo);
     }
 

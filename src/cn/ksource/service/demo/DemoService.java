@@ -1,7 +1,6 @@
 package cn.ksource.service.demo;
 
 import cn.ksource.domain.demo.DemoDto;
-import cn.ksource.domain.demo.DemoExample;
 
 import java.util.List;
 
@@ -16,7 +15,7 @@ public interface DemoService {
 
     void updateDemo(DemoDto demoDto);
 
-    List<DemoDto> selectByExample(DemoExample demoExample);
+    List<DemoDto> selectByExample(DemoDto demoDto);
 
     void deleteDemoById(String id);
 

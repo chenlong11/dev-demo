@@ -3,7 +3,6 @@ package cn.ksource.service.demo;
 import cn.hutool.core.util.RandomUtil;
 import cn.ksource.domain.demo.Demo;
 import cn.ksource.domain.demo.DemoDto;
-import cn.ksource.domain.demo.DemoExample;
 import cn.ksource.mapper.demo.DemoDao;
 import cn.ksource.util.DateUtilSupport;
 import org.springframework.beans.BeanUtils;
@@ -42,8 +41,8 @@ public class DemoServiceImpl implements DemoService{
     }
 
     @Override
-    public List<DemoDto> selectByExample(DemoExample demoExample) {
-        return demoDao.selectByExample(demoExample);
+    public List<DemoDto> selectByExample(DemoDto demoDto) {
+        return demoDao.selectByExample(demoDto);
     }
 
     @Override

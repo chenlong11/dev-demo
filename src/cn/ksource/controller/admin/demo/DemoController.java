@@ -3,7 +3,6 @@ package cn.ksource.controller.admin.demo;
 import cn.hutool.core.util.StrUtil;
 import cn.ksource.controller.base.BaseController;
 import cn.ksource.domain.demo.DemoDto;
-import cn.ksource.domain.demo.DemoExample;
 import cn.ksource.domain.response.ResponseResult;
 import cn.ksource.service.demo.DemoService;
 import com.github.pagehelper.PageHelper;
@@ -35,9 +34,9 @@ public class DemoController extends BaseController {
 
     @PostMapping("/list")
     @ResponseBody
-    public ResponseResult postList(DemoExample demoExample, int curPage,int pageSize) {
+    public ResponseResult postList(DemoDto demoDto, int curPage,int pageSize) {
         PageHelper.startPage(curPage,pageSize);
-        List<DemoDto> demoDtos = demoService.selectByExample(demoExample);
+        List<DemoDto> demoDtos = demoService.selectByExample(demoDto);
         PageInfo<DemoDto> pageInfo = new PageInfo<DemoDto>(demoDtos);
         return new ResponseResult(pageInfo);
     }

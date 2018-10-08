@@ -1,0 +1,70 @@
+<div class="facieditlistright">
+    <div class="fs_navtitle facieditlistright_navtitle" id="fsNavtitle">
+        <h2>系统功能列表</h2>
+        <div class="fsnt_btn">
+            <a class="operating_conmon"  href="javascript:edit();">
+                <span class="facilistright_forticon">增加</span>
+            </a>
+        </div>
+    </div>
+    <div id="module-table"></div>
+</div>
+
+<script>
+    $(function () {
+        query();
+    })
+
+    function query() {
+        var param = {'pid':'${RequestParameters.pid}'};
+        var options = {
+            id: 'module-table',
+            url: '${ctx}/admin/module/list',
+            param: param,
+            pageSize: 10,
+            columns: [
+                {field: 'moduleName', title: '名称', width: '20%'},
+                {field: 'moduleCode', title: '编码', width: '30%'},
+                {field: 'moduleUrl', title: 'URL', width: '20%'},
+                {field: 'sn', title: '顺序号', width: '10%'},
+                {
+                    title: '操作', width: '33%', class:"list_btnmore_wrap",customize: function (index, item) {
+                        var htmlstr = '<a class="blue_txt lb_button" href="javascript:edit(\'' + item.id + '\')"><span>修改</span></a>  '
+                            + '<a class="blue_txt" href="javascript:del(\'' + item.id + '\')"><span>删除</span></a>';
+                        return htmlstr;
+                    }
+                }
+            ]
+        };
+        paging(options);
+    }
+
+    function edit(id) {
+        var lv = ${RequestParameters.lv} +1;
+        var pid = '${RequestParameters.pid}';
+        id = id || '';
+        openDialog({
+            url: '${ctx}/admin/module/edit/' + id,
+            params: {'lv':lv,'pid':pid},
+            btn: ['确定', '关闭'],
+            yes: function (index, layero) {
+                $('#form').submit();
+            }
+        });
+    }
+
+    function del(id) {
+        top.openMsg("确定要删除么",function () {
+            $.post('${ctx}/admin/module/del/'+id,{},function (data) {
+                if(data.status!=1) {
+                    errMsg();
+                }
+                sucessMsg(function () {
+                    queryTree('${RequestParameters.pid}');
+                });
+            },'json');
+        })
+    }
+
+
+</script>

@@ -1,6 +1,6 @@
 <div style="text-align:center">
     <h1>Demo Edit</h1>
-    <form id="form" action="${ctx}/admin/demo/edit/${info.id}" method="post">
+    <form id="form">
         <table style="margin:auto">
             <tr>
                 <td style="width: 15%;">
@@ -56,18 +56,15 @@
                 }
             },
             submitHandler: function() {
-                $('#form').ajaxSubmit({
-                    dataType: 'json',
-                    success: function (data) {
-                        if (data.status != 1) {
-                            errMsg();
-                        }
-                        sucessMsg(function () {
-                            closeAllDialog();
-                            query();
-                        });
+                $.post('${ctx}/admin/demo/edit/${info.id}',$('#form').serializeObject(),function (data) {
+                    if (data.status != 1) {//登陆失败，提示错误信息
+                        errMsg();
                     }
-                })
+                    sucessMsg(function () {
+                        closeAllDialog();
+                        query();
+                    });
+                },'json');
             }
         });
     })

@@ -1,0 +1,260 @@
+@charset "utf-8";
+/* CSS Document */
+
+/*input_wrap*/
+.input_wrap, .textarea_wrap{
+	position:relative;
+	background:#FFF;
+	border:1px solid #666;
+	width:200px;
+	height:24px;
+	overflow:hidden;
+}
+.input_wrap input, .input_wrap span, .textarea_wrap textarea, .textarea_wrap span{
+	padding:0 5px;
+    position: absolute;
+	left:0;
+	top:0;
+	background: none;
+	border: none;
+	height: 24px;
+	width:190px;
+	color:#686767;
+	font:12px "宋体";
+	line-height:24px;
+	z-index: 1;
+}
+.textarea_wrap{
+	width:200px;
+	height:100px;
+}
+.textarea_wrap textarea, .textarea_wrap span{
+	height:100px;
+	width:190px;
+}
+
+body{
+    background:#FFF;
+	min-width:1070px;
+}
+
+/*login_top*/
+.login_top{
+    margin:0 auto;
+	padding:20px 0 35px;
+	height:48px;
+	width:1000px;
+}
+.login_top a.larks_logo{
+    float:left;
+}
+.login_top p{
+    float:right;
+	color:#333333;
+	font-size:12px;
+}
+.login_top p em{
+    color:#ff6600;
+}
+
+
+/*login_con_wrap*/
+.login_con_wrap{
+	background:#029044 url(../images/login_bg.png) center top no-repeat;
+    height:449px;
+}
+.login_con_bigbg{
+    margin:0 auto;
+	height:449px;
+	width:1070px;
+}
+.login_con{
+    margin:0 auto;
+	width:1000px;
+}
+.login_func{
+	float:right;
+	margin-top:40px;
+    width:362px;
+}
+.login_func .lf_top{
+    background:url(../images/login-box-top.png) no-repeat;
+	height:5px;
+	width:362px;
+}
+.login_func .lf_con{
+	padding:5px 35px 15px;
+    background:url(../images/login-box-middle.png) repeat-y;
+}
+.login_func .lf_bottom{
+    background:url(../images/login-box-bottom.png) no-repeat;
+	height:10px;
+	width:362px;
+}
+.login_func .lfc_btn{
+    background:url(../images/btnbg.gif) repeat-x;
+	height:47px;
+}
+.login_func .lfc_btn a{
+	float:left;
+	padding:0 5px;
+	display:block;
+	height:44px;
+    color:#666666;
+	font:18px "微软雅黑";
+	line-height:45px;
+}
+.login_func .lfc_btn a.focus, .login_func .lfc_btn a:hover{
+	border-bottom:solid 2px #029044;
+	color:#029044;
+}
+.login_func .lfc_btn a.forget_password{
+    float:right;
+}
+.login_func div.input_div{
+	margin-top:25px;
+	position:relative;
+	border:1px solid #e7e7e7;
+    height:35px;
+}
+.error_pop{
+	position: absolute;
+	padding:0 10px;
+	left:300px;
+	top:0;
+    background-color: #ff9898;
+    border: 1px solid #f66;
+	height:33px;
+	color: #fff;
+    cursor: default;
+    font-size: 12px;
+	line-height:33px;
+	white-space:nowrap;
+    z-index: 100;
+}
+.error_pop:before, .error_pop:after{
+    color: #f66;
+    content: "◆";
+    font-family: "SimSun";
+    font-size: 16px;
+    left: -8px;
+    position: absolute;
+    top: 2px;
+    transition: all 0.6s ease 0s;
+}
+.error_pop:after{
+    color: #ff9898;
+    left: -7px;
+}
+.login_func div.input_div img{
+    float:left;
+	margin:7px 5px 0 5px;
+}
+.login_func div.input_div .input_wrap{
+	border:none;
+	height:35px;
+    width:255px;
+}
+.login_func div.input_div .input_wrap span, .login_func div.input_div .input_wrap input{
+    height:35px;
+	width:245px;
+	line-height:35px;
+}
+.login_func div.input_div .input_wrap span{
+    color:#bababa;
+	font-size:14px;
+}
+.login_func a.login_btn{
+    margin-top:25px;
+	background:#029044;
+	border-radius:3px;
+	display:block;
+	height:40px;
+	color:#FFF;
+	font:16px "微软雅黑";
+	line-height:40px;
+	text-align:center;
+}
+.login_func a.login_btn:hover{
+    background:#029011;
+}
+.login_func a.login_btn.focus{
+    background:#ccc;
+}
+.login_func .remember_password{
+    margin-top:15px;
+	padding-bottom:20px;
+	color:#7f7f7f;
+	font:14px "微软雅黑";
+}
+.login_func .remember_password input{
+    margin:4px 5px 0 0;
+}
+.login_func .remember_password input, .login_func .remember_password label{
+    float:left;
+}
+.login_func .remember_password a{
+    float:right;
+} 
+.login_func .other_login{
+	margin-bottom:10px;
+	padding-top:20px;
+	border-top:1px solid #e4e4e4;
+    color:#7f7f7f;
+	font-size:12px;
+}
+.login_func .other_login a, .login_func .other_login span, .login_func .other_login img{
+    float:left;
+	display:block;
+}
+.login_func .other_login a{
+    margin-left:5px;
+}
+.login_footer{
+	margin:0 auto;
+	padding:55px 0;
+	width:1000px;
+	color:#666;
+	font-size:12px;
+	text-align:center;
+}
+.login_footer P{
+    width:100%;
+    text-align:center;
+}
+.login_footer P a{
+    color:#666666;
+}
+.login_footer P span{
+    margin:0 5px;
+}
+.login_footer em{
+}
+.login_func div.verification_code{
+    border:none;
+}
+.login_func div.verification_code .input_wrap{
+    float:left;
+	border:1px solid #e7e7e7;
+	width:145px;
+}
+.login_func div.verification_code .input_wrap span, .login_func div.verification_code .input_wrap input{
+    width:135px;
+}
+.login_func div.verification_code span.vc_wrap{
+    float:right;
+	margin:0 5px;
+	border:1px solid #e7e7e7;
+	display:block;
+	height:35px;
+	width:85px;
+}
+.login_func div.verification_code span.vc_wrap img{
+    margin:0;
+}
+.login_func div.verification_code a{
+	float:right;
+    color:#0088cc;
+	font-size:12px;
+	line-height:37px;
+}

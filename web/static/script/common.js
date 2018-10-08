@@ -59,11 +59,16 @@ function asynchronous_page(opts) {
                         $td.addClass(item["class"])
                     }
                     if ("customize" in item) {//自定义td内容
-                        var index = ((opts["curr"] - 1) * opts.pageSize) + i;
+                        var index = ((opts["curr"] - 1) * opts.pageSize) + i + 1;
                         $td.html(item.customize(index, data));
                     } else {
                         if ("field" in item) {
-                            $td.text(data[item.field]);
+                            if(item.field == '_index'){
+                                var index = ((opts["curr"] - 1) * opts.pageSize) + i + 1;
+                                $td.text(index);
+                            }else{
+                                $td.text(data[item.field]);
+                            }
                         }
                     }
                     $tr.append($td);
@@ -96,20 +101,20 @@ function asynchronous_page(opts) {
 
 //操作成功弹出框
 function sucessMsg(fun) {
-    openMsg('操作成功',fun);
+    openMsg('操作成功', fun);
 }
 
 //操作失败弹出框
 function errMsg(fun) {
-    openMsg('操作失败',fun);
+    openMsg('操作失败', fun);
 }
 
-function openMsg(title,fun) {
+function openMsg(title, fun) {
     title = title || '';
     fun = fun || function () {
         return false;
     };
-    layer.confirm(title, {
+    top.layer.confirm(title, {
         btn: ['确认']
     }, function () {
         layer.close(layer.index);
@@ -166,7 +171,7 @@ function initTree(opt, rootId, lv) {
                 })
                 $('#' + opt.id).html($div);
                 //初始化列表方法
-                if(!opt.curNodeId){
+                if (!opt.curNodeId) {
                     opt.clickFun(rootId, rootLv);
                 }
                 opt['initContainer'] = true;
@@ -250,12 +255,15 @@ function initTree(opt, rootId, lv) {
             nodeId = nodeId || '';
             this.extendPNode($('#' + nodeId));
 
-            if($('#' + nodeId).parents('a:first').length > 0) {
-                $('#' + nodeId).parents('a:first').trigger('click');
+
+
+
+            if ($('#' + nodeId + ' a').length > 0) {
+                $('#' + nodeId + ' a:first').trigger('click');
             }
         },
-        extendPNode: function($node) {
-            if($node.parents('ul:first').length > 0) {
+        extendPNode: function ($node) {
+            if ($node.parents('ul:first').length > 0) {
                 $node.parents('ul:first').show();
                 this.extendPNode($node.parents('ul:first'));
             }
@@ -263,10 +271,13 @@ function initTree(opt, rootId, lv) {
     };
 
 
-    $.post(opt.url, {}, function (list) {
-        tree.createTree(list, opt, rootId, lv);
+    $.post(opt.url, {}, function (res) {
+        if (res.status != 10000){
+            return;
+        }
+        tree.createTree(res.data, opt, rootId, lv);
         tree.initEvent();
-        if(opt.curNodeId){
+        if (opt.curNodeId) {
             tree.selectedNode(opt.curNodeId);
         }
     }, 'json');
@@ -274,25 +285,29 @@ function initTree(opt, rootId, lv) {
     return tree;
 }
 
+/**
+ * 打开弹出框
+ * @param obj
+ */
 function openDialog(obj) {
 
-    if(!obj.url){
+    if (!obj.url) {
         console.log(' url 不能为空 ');
         return;
     }
 
     obj.params = obj.params || {};
 
-    $.get(obj.url,obj.params,function (data) {
+    $.get(obj.url, obj.params, function (data) {
         obj = obj || {};
         var conf = {
             type: 1,
-            title:" ",
-            area:['60%','70%'],
-            btn:['关闭'],
-            move:false,
-            maxmin:true,
-            scrollbar:false,
+            title: " ",
+            area: ['60%', '70%'],
+            btn: ['关闭'],
+            move: false,
+            maxmin: true,
+            scrollbar: false,
             content: data
         };
         $.extend(conf, obj);
@@ -300,10 +315,11 @@ function openDialog(obj) {
     })
 }
 
-
-
-
-
-
-
-
+/**
+ * 密码加密
+ */
+function crypPwd(pwd) {
+    var key = CryptoJS.enc.Utf8.parse('6543210987654321');
+    var iv = CryptoJS.enc.Utf8.parse('1234567890123456');
+    return CryptoJS.AES.encrypt(pwd,key,{iv:iv,mode:CryptoJS.mode.CBC,padding:CryptoJS.pad.Pkcs7});
+}

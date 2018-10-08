@@ -16,4 +16,15 @@ public class Constants {
         HOST_LIST = props.getStr("app.hosts");
     }
 
+    //PC用户登陆标识
+    public static final String USER_LOGIN_IDENTIFY = "user_login_identify";
+
+    //AES加密参数
+    public static final String AES_KEY = "6543210987654321";
+    public static final String AES_IV = "1234567890123456";
+
+    //异步请求超时
+    public static final String AJAX_LOGIN_TIME_OUT = "ajax_login_time_out";
+
+
 }

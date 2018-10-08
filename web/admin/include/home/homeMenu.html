@@ -1,0 +1,84 @@
+<div class="service_btn_con">
+    <table class="service_btn">
+        <tr>
+            <td><a class="logo" title=""><img src="${ctx}/static/admin/images/larks-logo.png" alt=""/></a></td>
+        </tr>
+    </table>
+</div>
+<nav class="dp_nav newdd_nav">
+    <div class="dpn_nav_con">
+        <div class="dpn_con_wrap">
+            <div class="dpn_con" id="dpnCon">
+                [#if Session[Constants.USER_LOGIN_IDENTIFY].modules?? && Session[Constants.USER_LOGIN_IDENTIFY].modules?size>0]
+                [#assign lv1modules = Session[Constants.USER_LOGIN_IDENTIFY].modules]
+                <table>
+                    <tr class="dp_first_level">
+                        [#list lv1modules as lv1module]
+                        <td><a href="javascript:void(0);">${lv1module.moduleName}</a></td>
+                        [/#list]
+                    </tr>
+                    <tr class="dp_second_level">
+                        [#list lv1modules as lv1module]
+                        [#if lv1module.children ?? && lv1module.children?size>0]
+                        <td>
+                            [#list lv1module.children as lv2module]
+                            <a href="${ctx}/admin/module/redirect/${lv2module.id}"><span>${lv2module.moduleName}</span></a>
+                            [/#list]
+                        </td>
+                        [/#if]
+                        [/#list]
+                    </tr>
+                </table>
+                [/#if]
+            </div>
+        </div>
+    </div>
+    [#if Session[Constants.USER_LOGIN_IDENTIFY].modules?? && Session[Constants.USER_LOGIN_IDENTIFY].modules?size>8]
+    <div class="btns"><a href="javascript:void(0)" class="up uN"></a><a href="javascript:void(0)" class="down"></a>
+    </div>
+    <script type="text/javascript">
+        jQuery(function (jq) {
+            var rr = jq('.dp_nav');
+            var conr = rr.find('div.dpn_con_wrap'),
+                conr0 = conr[0],
+                btnWr = rr.find('div.btns'),
+                btnPr = btnWr.find('a.up'),
+                btnNr = btnWr.find('a.down');
+
+            var lisr = conr.find('tr.dp_first_level>td');
+
+            var pnumr = 7, numr = lisr.length;
+            if (numr <= pnumr) {
+
+                return;
+            }
+
+            var owr = lisr[1].offsetLeft - lisr[0].offsetLeft,
+                idxArear = [0, numr - pnumr],
+                idxr = 0;
+
+            function updateNum(n) {
+                if (n > idxArear[1] || n < idxArear[0]) {
+                    return;
+                }
+
+                btnPr[((n == 0) ? 'add' : 'remove') + 'Class']('uN');
+                btnNr[((n == idxArear[1]) ? 'add' : 'remove') + 'Class']('dN');
+                idxr = n;
+                conr.stop().animate({left: -n * owr}, 300);
+            }
+
+            btnPr.click(function () {
+                updateNum(idxr - 1);
+                return false;
+            });
+            btnNr.click(function () {
+                updateNum(idxr + 1);
+                return false;
+            });
+        });
+    </script>
+    [/#if]
+</nav>
+<div class="wcm-figure">
+</div>

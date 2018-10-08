@@ -1,7 +1,7 @@
 package cn.ksource.domain.response;
 
 
-import cn.ksource.constants.ExConstants;
+import cn.ksource.constants.ExceptionConstants;
 
 import java.util.HashMap;
 
@@ -19,7 +19,7 @@ public class ResponseResult {
     private Object data;
 
     {
-        this.status = ExConstants.SUCESS;
+        this.status = ExceptionConstants.SUCESS;
         this.msg = "操作成功";
         this.data = new HashMap();
     }

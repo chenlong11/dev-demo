@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无权限访问</title>
+<style>
+.binding_top_wrap{
+	height: 80px;
+	width: auto;
+	border-bottom: 2px solid #eee;
+	margin-top: 30px;
+	}
+.binding_top{
+	margin: 0 auto;
+	width:1000px;
+	height:48px;
+    }
+.binding_top a{
+	float: left;	 
+	}
+.binding_top .sub-name{
+	float: left;
+	font: 18px 微软雅黑;
+	color: #666;
+	line-height: 48px;
+	width: 180px;
+	height: 48px;
+	padding-left: 20px;
+	background: url(${ctx}/static/admin/images/pic_1.png) no-repeat left center;
+	margin-left: 30px;
+	}
+.footer{
+	margin-top: 25px;
+    padding: 25px 0 50px;
+    border-top: 1px solid #d4d4d4;
+    color: #999999;
+    font-size: 12px;
+    line-height: 24px;
+    text-align: center;
+	}
+/*license*/
+.qxBg{width:400px;background:url(${ctx}/static/admin/images/no_permission.png) left center no-repeat;padding-left:300px;margin:110px auto;height:245px;font-size:14px;color:#333;}
+.qxTit{font-style:italic;padding:80px 0 10px 0px;font-size:30px;color:#ff7300;font-family:microsoft yahei;margin-bottom:20px;}
+.qxCon{font-size: 14px;color: #666;margin-bottom:10px;}
+.licenseBlueBtn{background:#3288f3;color:#fff;padding:6px 13px;border:0;cursor:pointer;border-radius:4px;margin:0 3px;}
+</style>
+    
+</head>
+
+<body>
+<div class="binding_top_wrap">
+<div class="binding_top">
+<a><img src="${ctx}/static/admin/images/find-password-logo.gif" width="247" height="48" alt=""/></a>
+<div class="sub-name">无权限访问</div>
+</div>     
+</div>
+<div class="qxBg">
+	<div class="qxTit">您没有权限访问！！！</div>
+	<input type="button" value="返回首页" class="licenseBlueBtn" onclick="backIndex();">
+</div>
+<div class="footer">
+	[#include "/admin/include/adminFooter.html" /]
+</div>
+
+<script>
+    function backIndex() {
+		top.window.location.href = "${ctx}/admin/index/home";
+    }
+</script>
+</body>
+</html>

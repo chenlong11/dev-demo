@@ -1,0 +1,69 @@
+<div class="end_task_body widthauto">
+<div class="edit_txt">
+    <form id="form" >
+        <input type="hidden" name="id" value="${info.id}"/>
+        <input type="hidden" name="pid" id="pid" value="${RequestParameters.pid}"/>
+        <input type="hidden" name="lv" value="${RequestParameters.lv}"/>
+        <table class="edit_layout2">
+            <tr>
+                <th><label class="required">名称：</label></th>
+                <td>
+                    <input class="general" type="text" value="${info.moduleName}" name="moduleName" id="moduleName"/>
+                </td>
+            </tr>
+            <tr>
+                <th><label class="required">编码：</label></th>
+                <td>
+                    <input class="general" type="text" value="${info.moduleCode}" name="moduleCode" id="moduleCode"/>
+                </td>
+            </tr>
+            [#if RequestParameters.lv>2]
+            <tr>
+                <th><label>URL：</label></th>
+                <td>
+                    <input class="general" type="text" value="${info.moduleUrl}" name="moduleUrl" id="moduleUrl"/>
+                </td>
+            </tr>
+            [/#if]
+            <tr>
+                <th><label class="required">顺序号：</label></th>
+                <td>
+                    <input class="general" type="text" value="${info.sn}" class="input-text" name="sn" id="sn"/>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+
+<script type="text/javascript">
+    $("#form").validate({
+        rules: {
+            moduleName: {
+                required: true,
+                rangelength: [1, 30]
+            },moduleCode: {
+                required: true,
+                rangelength: [1, 50]
+            },moduleUrl: {
+                required: true,
+                rangelength: [1, 50]
+            },sn: {
+                digits:true,
+                max: 999
+            }
+        },
+        submitHandler: function() {
+            $.post('${ctx}/admin/module/edit/${info.id}',$('#form').serializeObject(),function (res) {
+                if (res.status != 10000) {//登陆失败，提示错误信息
+                    errMsg();
+                }
+                sucessMsg(function () {
+                    closeAllDialog();
+                    queryTree('${RequestParameters.pid}');
+                });
+            },'json');
+        }
+    });
+</script>
+</div>

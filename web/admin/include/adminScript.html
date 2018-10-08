@@ -1,8 +1,24 @@
+<script type="text/javascript" src="${ctx}/static/script/modernizr.custom.js"></script>
 <script type="text/javascript" src="${ctx}/static/plugins/jquery/jquery-3.3.1.min.js"></script>
-<script type="text/javascript" src="${ctx}/static/plugins/jqueryForm/jquery.form.js"></script>
 <script type="text/javascript" src="${ctx}/static/plugins/jqueryValidate/jquery.validate.js"></script>
 <script type="text/javascript" src="${ctx}/static/plugins/jqueryValidate/additional-methods.js"></script>
 <script type="text/javascript" src="${ctx}/static/plugins/jqueryValidate/localization/messages_zh.js"></script>
 <script type="text/javascript" src="${ctx}/static/plugins/layer/layer.js"></script>
 <script type="text/javascript" src="${ctx}/static/plugins/laypage/laypage.js"></script>
 <script type="text/javascript" src="${ctx}/static/script/common.js"></script>
+<script type="text/javascript" src="${ctx}/static/script/platform.js"></script>
+<script type="text/javascript" src="${ctx}/static/script/utilfunc.js"></script>
+<script type="text/javascript" src="${ctx}/static/plugins/jqueryCookie/jquery.cookie.js"></script>
+<script type="text/javascript" src="${ctx}/static/plugins/encrypt/aes.js"></script>
+
+<script>
+    /**
+     * 登出
+     */
+    function logout() {
+        openMsg('确定要退出么？', function () {
+            window.location.href = "${ctx}/admin/logout";
+        });
+    }
+
+</script>

@@ -4,7 +4,7 @@ import cn.hutool.core.util.RandomUtil;
 import cn.ksource.domain.demo.Demo;
 import cn.ksource.domain.demo.DemoDto;
 import cn.ksource.mapper.demo.DemoDao;
-import cn.ksource.util.DateUtilSupport;
+import cn.ksource.util.DateSupportUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,8 +27,8 @@ public class DemoServiceImpl implements DemoService{
         Demo demo = new Demo();
         BeanUtils.copyProperties(demoDto, demo);
         demo.setId(RandomUtil.simpleUUID());
-        demo.setCreateDate(DateUtilSupport.getCurDate());
-        demo.setCreateTime(DateUtilSupport.getCurTime());
+        demo.setCreateDate(DateSupportUtil.getCurDate());
+        demo.setCreateTime(DateSupportUtil.getCurTime());
         demo.setState(Short.valueOf("1"));
         demoDao.insert(demo);
     }

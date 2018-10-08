@@ -1,0 +1,11 @@
+<header class="dp_header">
+    <div class="dp_header_con">
+        <h1>您好，<font color="red">${Session[Constants.USER_LOGIN_IDENTIFY].userName}<!--（${sessionUser.roles}）--></font>！欢迎来到${PropConstants.appName} </h1>
+        <div class="dphc_btn">
+            <a href="${ctx}/business/pages/loginuser/accountInfo.html">我的资料</a>
+            <a href="${ctx}/business/pages/loginuser/repassword.html">修改密码</a>
+            <!--<a href="${ctx}/business/pages/message/myMessage.html">我的消息(<span id="messageCount">0</span>)</a>-->
+            <a class="login_out" href="javascript:logout();"><img src="${ctx}/static/admin/images/zc-icon-84.gif" alt="" /></a>
+        </div>
+    </div>
+</header>

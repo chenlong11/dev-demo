@@ -24,6 +24,7 @@ public class MyFreeMarkerConfigurer extends FreeMarkerConfigurer {
             TemplateHashModel staticModels = wrapper.getStaticModels();
             cfg.setSharedVariable("StrUtil", (TemplateHashModel) staticModels.get("cn.hutool.core.util.StrUtil"));
             cfg.setSharedVariable("Constants", (TemplateHashModel) staticModels.get("cn.ksource.constants.Constants"));
+            cfg.setSharedVariable("PropConstants", (TemplateHashModel) staticModels.get("cn.ksource.constants.PropConstants"));
         } catch (Exception e) {
             e.printStackTrace();
         }

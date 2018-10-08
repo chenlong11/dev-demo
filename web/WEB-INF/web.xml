@@ -105,7 +105,7 @@
     </servlet-mapping>
 
     <welcome-file-list>
-        <welcome-file>/admin/login</welcome-file>
+        <welcome-file>/admin/login.html</welcome-file>
     </welcome-file-list>
 
 </web-app>

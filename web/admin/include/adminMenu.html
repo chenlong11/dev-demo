@@ -1,0 +1,207 @@
+<header class="fs_header">
+    <a class="larks_logo" title="${PropConstants.appName} " href="${ctx}/admin/index/home">
+        <img src="${ctx}/static/admin/images/larks-logo.gif" alt="${PropConstants.appName} "/></a>
+    <a class="back_index" title="回到首页" href="${ctx}/admin/index/home">
+        <img src="${ctx}/static/admin/images/zc-icon-1.gif" alt="回到首页"/></a>
+    <div class="totalnav" id="totalnav">
+        <a class="tn_btn"><span></span></a>
+        [#if Session[Constants.USER_LOGIN_IDENTIFY].modules?? && Session[Constants.USER_LOGIN_IDENTIFY].modules?size>0]
+        [#if Session[Constants.USER_LOGIN_IDENTIFY].modules?size<8]
+        <div class="tn_con">
+            <h3>我的桌面</h3>
+            <table>
+                <tr>
+                    [#assign lv1modules = Session[Constants.USER_LOGIN_IDENTIFY].modules]
+                    [#list lv1modules as lv1module]
+                        <td [#if !lv1module_has_next]class="nopadding" [/#if]>
+                        <h4>${lv1module.moduleName}</h4>
+                        [#if lv1module.children?? && lv1module.children?size>0]
+                            [#list lv1module.children as lv2module]
+                            <a href="${ctx}/admin/module/redirect/${lv2module.id}">${lv2module.moduleName}</a>
+                            [/#list]
+                        [/#if]
+                        </td>
+                    [/#list]
+                </tr>
+            </table>
+        </div>
+        [#else]
+        <div class="tn_con" style="display:block;">
+            <h3>我的桌面</h3>
+            <div class="tn_con_wrap">
+                <div class="tn_con_con">
+                    <table>
+                        <tr>
+                            [#assign lv1modules = Session[Constants.USER_LOGIN_IDENTIFY].modules]
+                            [#list lv1modules as lv1module]
+                            <td [#if !lv1module_has_next]class="nopadding" [/#if]>
+                            <h4>${lv1module.moduleName}</h4>
+                            [#if lv1module.children?? && lv1module.children?size>0]
+                            [#list lv1module.children as lv2module]
+                            <a href="${ctx}/admin/module/redirect/${lv2module.id}">${lv2module.moduleName}</a>
+                            [/#list]
+                            [/#if]
+                            </td>
+                            [/#list]
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="btns2"><a href="javascript:void(0)" class="up uN"></a><a href="javascript:void(0)" class="down"></a></div>
+            <script type="text/javascript">
+                jQuery(function (jq) {
+                    var rr = jq('.tn_con');
+                    var conr = rr.find('div.tn_con_con'),
+                        conr0 = conr[0],
+                        btnWr = rr.find('div.btns2'),
+                        btnPr = btnWr.find('a.up'),
+                        btnNr = btnWr.find('a.down');
+
+                    var lisr = conr.find('td');
+
+                    var pnumr = 7, numr = lisr.length;
+                    if (numr <= pnumr)return;
+                    var owr = lisr[1].offsetLeft - lisr[0].offsetLeft,
+                        idxArear = [0, numr - pnumr],
+                        idxr = 0;
+
+                    $(".tn_con").hide();
+
+                    function updateNum(n) {
+                        if (n > idxArear[1] || n < idxArear[0]) {
+                            return;
+                        }
+
+                        btnPr[((n == 0) ? 'add' : 'remove') + 'Class']('uN');
+                        btnNr[((n == idxArear[1]) ? 'add' : 'remove') + 'Class']('dN');
+                        idxr = n;
+                        conr.stop().animate({left: -n * owr}, 300);
+                    }
+
+                    btnPr.click(function () {
+                        updateNum(idxr - 1);
+                        return false;
+                    });
+                    btnNr.click(function () {
+                        updateNum(idxr + 1);
+                        return false;
+                    });
+                });
+            </script>
+        </div>
+        [/#if]
+        [/#if]
+    </div>
+
+    [#assign lv2modules = lv1module.children/]
+    [#if lv2modules?? && lv2modules?size>0]
+    [#if lv2modules?size<8]
+    <div class="tn_connav">
+        [#list lv2modules as lv2module]
+            [#if lv2module.moduleCode == lv2moduleCode]
+            [#assign lv2moduleName = lv2module.moduleName]
+            [/#if]
+        <a href="${ctx}/admin/module/redirect/${lv2module.id}" [#if lv2module.moduleCode == lv2moduleCode]class="focus"[/#if]><span>${lv2module.moduleName}</span></a>
+        [/#list]
+    </div>
+    [#else]
+    <div id="contentE">
+        <div class="cons">
+            <div class="tn_connav con">
+                [#list lv2modules as lv2module]
+                    [#if lv2module.moduleCode == lv2moduleCode]
+                    [#assign lv2moduleName = lv2module.moduleName]
+                    [/#if]
+                <a href="${ctx}/admin/module/redirect/${lv2module.id}" [#if lv2module.moduleCode == lv2moduleCode]class="focus"[/#if]><span>${lv2module.moduleName}</span></a>
+                [/#list]
+            </div>
+        </div>
+        <div class="btns"><a href="javascript:void(0)" class="up uN"></a><a href="javascript:void(0)" class="down"></a>
+        </div>
+    </div>
+    <script type="text/javascript">
+        jQuery(function (jq) {
+            var rr = jq('#contentE');
+            var conr = rr.find('div.con'),
+                conr0 = conr[0],
+                btnWr = rr.find('> div.btns'),
+                btnPr = btnWr.find('a.up'),
+                btnNr = btnWr.find('a.down');
+
+            var lisr = conr.find('a');
+
+            var pnumr = 7, numr = lisr.length;
+            if (numr <= pnumr)return;
+            var owr = lisr[1].offsetLeft - lisr[0].offsetLeft,
+                idxArear = [0, numr - pnumr],
+                idxr = 0;
+
+            function updateNum(n) {
+                if (n > idxArear[1] || n < idxArear[0]) {
+                    return;
+                }
+
+                btnPr[((n == 0) ? 'add' : 'remove') + 'Class']('uN');
+                btnNr[((n == idxArear[1]) ? 'add' : 'remove') + 'Class']('dN');
+
+                idxr = n;
+                conr.stop().animate({left: -n * owr}, 300);
+            }
+
+            btnPr.click(function () {
+                updateNum(idxr - 1);
+                return false;
+            });
+            btnNr.click(function () {
+                updateNum(idxr + 1);
+                return false;
+            });
+        });
+    </script>
+    [/#if]
+    [/#if]
+
+    <div class="tn_right">
+        <div class="tn_customer" id="tnCustomer">
+            <a class="tnc_text" id="tncText"><span>${Session[Constants.USER_LOGIN_IDENTIFY].userName}</span></a>
+            <div class="tnc_con" id="tncCon">
+                <a href="${ctx}/business/pages/loginuser/accountInfo.html">我的资料</a>
+                <a href="${ctx}/business/pages/loginuser/repassword.html">修改密码</a>
+            </div>
+        </div>
+        <a class="tn_logout" href="javascript:logout();"></a>
+    </div>
+</header>
+
+[#list lv2modules as lv2module ]
+    [#if lv2module.moduleCode == lv2moduleCode && lv2module.children?? && lv2module.children?size>0]
+        [#assign lv3modules = lv2module.children /]
+    [/#if]
+[/#list]
+<nav class="fs_nav">
+    <div class="fsnav_con">
+        <h3>${lv1module.moduleName}</h3>
+        [#if lv3modules?? && lv3modules?size>0]
+        [#list lv3modules as lv3module]
+            [#if lv3moduleCode == lv3module.moduleCode]
+                [#assign lv3moduleName = lv3module.moduleName]
+            [/#if]
+
+        <a href="${ctx}${lv3module.moduleUrl}" [#if lv3moduleCode == lv3module.moduleCode]class="focus"[/#if]>
+        <span>${lv3module.moduleName}<div class=""></div></span></a>
+        [/#list]
+        [#else]
+        <h3>权限列表中没有分配此功能</h3>
+        [/#if]
+    </div>
+</nav>
+
+<div class="fs_navpath">
+    <h3>当前位置</h3>
+    <span></span>
+    <a>${lv1module.moduleName}</a>
+    <span></span>
+    <a>${lv2moduleName}</a>
+    <span></span>
+    <em>${lv3moduleName}</em>
+</div>

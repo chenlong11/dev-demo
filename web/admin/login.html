@@ -1,0 +1,163 @@
+<html>
+<head>
+    [#include "/admin/include/adminHeader.html"/]
+    <title>登录</title>
+    <link rel="stylesheet" type="text/css" href="${ctx}/static/admin/css/reset.css" />
+    <link rel="stylesheet" type="text/css" href="${ctx}/static/admin/css/login.css" />
+</head>
+
+<body>
+<div class="login_top clearfix">
+    <a class="larks_logo"><img src="${ctx}/static/admin/images/larks-logo.png" width="386" height="56" alt="" /></a>
+</div>
+<div class="login_con_wrap">
+    <div class="login_con_bigbg">
+        <div class="login_con">
+            <div class="login_func">
+                <div class="lf_top"></div>
+                <div class="lf_con">
+                    <div class="lfc_btn">
+                        <a class="focus">登录</a>
+                    </div>
+                    <form id="myform" autocomplete="off">
+
+                        <div class="input_div">
+                            <img src="${ctx}/static/admin/images/user-icon.gif" width="16" height="18" alt="" />
+                            <div class="input_wrap"> <input type="text" id="username"  name="username" placeholder="用户名" autocomplete="new-password"/> </div>
+                            <div class="error_pop" id="usernameerr" style="display:none;"></div>
+                        </div>
+
+                        <div class="input_div">
+                            <img src="${ctx}/static/admin/images/password-icon.gif" width="16" height="18" alt="" />
+                            <div class="input_wrap"> <input type="password" id="password" name="password" placeholder="密码" autocomplete="new-password"/></div>
+                            <div class="error_pop" id="passworderr"  style="display:none;"></div>
+                        </div>
+
+                        <div class="input_div verification_code clearfix">
+                            <div class="input_wrap"> <input type="text" name="code" id="code" value="${code}" placeholder="验证码"/> </div>
+                            <a href="javascript:changeCode();">换一张</a>
+                            <span class="vc_wrap"><img src="${ctx}/Kaptcha.validatecode" width="90" height="35" id="validatecode" alt="" /></span>
+                            <div class="error_pop" id="codeerr" style="display:none;"></div>
+                        </div>
+
+                        <a class="login_btn" id="login">登录</a>
+                        <a class="login_btn focus" id="logining" style="display:none;">登录中...</a>
+                        <div class="remember_password clearfix">
+                            <input type="checkbox" name="rememberMe" id = "rememberMe" /><label>记住密码</label>
+                            <a href="#">忘记密码</a>
+                        </div>
+
+                    </form>
+                </div>
+                <div class="lf_bottom"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+[#include "/admin/include/adminScript.html"/]
+
+<script type="text/javascript">
+
+    $(function () {
+
+        if ($.cookie("rmbUser") == "true") {
+            $("#rememberMe").attr("checked", true);
+            $("#username").val($.cookie("username"));
+            $("#password").val($.cookie("password"));
+        }
+
+        //登录
+        $("#login").click(function() {
+            //隐藏已经显示的错误信息
+            $('.error_pop').hide();
+
+            if ($("#rememberMe").prop("checked")) {
+                var str_username = $("#username").val();//用户名
+                var str_password = $("#password").val();//密码
+                $.cookie("rmbUser", "true", { expires: 7 }); //存储一个带7天期限的cookie
+                $.cookie("username", str_username, { expires: 7 });
+                $.cookie("password", str_password, { expires: 7 });
+            } else {
+                $.cookie("rmbUser", "false", { expire: -1 });
+                $.cookie("username", "", { expires: -1 });
+                $.cookie("password", "", { expires: -1 });
+            }
+
+
+            var username = $.trim($("#username").val());
+            if(!username) {
+                showCheckMsg('username','请输入用户名');
+                return;
+            }
+
+            var password = $.trim($("#password").val());
+            if(!password) {
+                showCheckMsg('password','请输入密码');
+                return;
+            }
+
+            var code = $.trim($("#code").val());
+            if(!code) {
+                showCheckMsg('code','请输入验证码');
+                return;
+            }
+
+            if(code.length != 4) {
+                showCheckMsg('code','请输入四位验证码');
+                return;
+            }
+
+            $("#password").val(crypPwd(password));
+            $("#login").hide();
+            $("#logining").show();
+            $("#usernameerr,#passworderr,#codeerr").hide();
+
+            $.post('${ctx}/admin/login',$('#myform').serializeObject(),function (data) {
+                console.log(data)
+                if (data.status != 10000) {//登陆失败，提示错误信息
+                    showCheckMsg('username',data.msg);
+                    $('#password').val('');
+                    $('#code').val('');
+                    changeCode();
+                    switchBtn();
+                } else {
+                    console.log('enter');
+                    window.location.href = '${ctx}/admin/index/home';
+                }
+            },'json');
+        });
+
+        $(document).keyup(function(event) {
+            if(event.keyCode==13) {
+                $("#login").trigger("click");
+            }
+        });
+
+    })
+
+    //显示错误信息
+    function showCheckMsg(id,msg) {
+        $('#'+id+'err').html(msg);
+        $('#'+id+'err').show();
+        $('#'+id).focus();
+        switchBtn();
+    }
+
+    //变更验证码
+    function changeCode() {
+        $("#validatecode").attr('src','${ctx}/'+Math.floor(Math.random()*0x10000) + '.validatecode');
+    }
+
+    function switchBtn() {
+        $("#logining").hide();
+        $("#login").show();
+    }
+
+</script>
+
+[#assign footType=1/]
+[#include "/admin/include/adminFooter.html" /]
+
+</body>
+</html>

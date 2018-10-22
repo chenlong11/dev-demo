@@ -3,7 +3,7 @@ package cn.ksource.filter;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.StrUtil;
 import cn.ksource.constants.Constants;
-import cn.ksource.domain.sysUser.SysUserDto;
+import cn.ksource.domain.user.SysUserDto;
 import cn.ksource.initialize.InitProcessor;
 import cn.ksource.util.ContextUtil;
 import cn.ksource.util.HttpSupportUtil;

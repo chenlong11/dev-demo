@@ -1,0 +1,75 @@
+<div class="facieditlistright">
+    <div class="fs_navtitle facieditlistright_navtitle" id="fsNavtitle">
+        <h2>人员列表</h2>
+        <div class="fsnt_btn">
+            <a class="operating_conmon"  href="javascript:editUser();">
+                <span class="facilistright_forticon">增加</span>
+            </a>
+        </div>
+    </div>
+    <div id="user-table"></div>
+</div>
+
+<script>
+
+    var DialogIndex ;
+
+    $(function () {
+        queryUserList();
+    })
+
+    function queryUserList() {
+        var param = {'orgId':'${RequestParameters.orgId}',deptId:'${RequestParameters.deptId}'};
+        var options = {
+            id: 'user-table',
+            url: '${ctx}/admin/user/list',
+            param: param,
+            pageSize: 10,
+            columns: [
+                {field: '_index', title: '序号', width: '12%'},
+                {field: 'userName', title: '名称', width: '20%'},
+                {field: 'accountName', title: '账号', width: '20%'},
+                {field: 'mobileNo', title: '手机号', width: '20%'},
+                {field: 'sn', title: '顺序号', width: '12%'},
+                {
+                    title: '操作', width: '33%', class:"list_btnmore_wrap",customize: function (index, item) {
+                        var htmlstr = '<a class="blue_txt lb_button" href="javascript:editUser(\'' + item.id + '\')"><span>修改</span></a>  '
+                            + '<a class="blue_txt" href="javascript:delUser(\'' + item.id + '\')"><span>删除</span></a>';
+                        return htmlstr;
+                    }
+                }
+            ]
+        };
+        paging(options);
+    }
+
+    function editUser(id) {
+        var orgId = '${RequestParameters.orgId}';
+        var deptId = '${RequestParameters.deptId}';
+        id = id || '';
+        dialogIndex = openDialog({
+            url: '${ctx}/admin/user/edit/' + id,
+            params: {'orgId':orgId,'deptId':deptId},
+            btn: ['确定', '关闭'],
+            yes: function (index, layero) {
+                $('#form').submit();
+            }
+        });
+    }
+
+    function delUser(id) {
+        openMsg("确定要删除么",function () {
+            $.post('${ctx}/admin/user/del/'+id,{},function (res) {
+                if(res.status!=10000) {
+                    errMsg(res.msg);
+                    return;
+                }
+                sucessMsg(function () {
+                    queryUserList();
+                });
+            },'json');
+        })
+    }
+
+
+</script>

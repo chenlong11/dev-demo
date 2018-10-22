@@ -1,0 +1,42 @@
+[#macro htmleditor id="" name="" value="" width="100%" height="400px" simple="true" class=""]
+
+<link rel="stylesheet" href="${ctx}/static/plugins/kindeditor/themes/default/default.css" />
+<script charset="utf-8" src="${ctx}/static/plugins/kindeditor/kindeditor-min.js"></script>
+<script charset="utf-8" src="${ctx}/static/plugins/kindeditor/lang/zh_CN.js"></script>
+<script type="text/javascript">
+
+			var ${id};
+			[#if simple=="true"]
+			KindEditor.ready(function(K) {
+				${id} = K.create('textarea[name="${id}"]', {
+					width:"${width}",
+					height:"${height}",
+					allowFileUpload : true,
+					uploadJson:"${base}/business/HtmlEditor/image_upload.html",
+					afterBlur: function(){this.sync();},
+					filterMode : false
+				});
+			});
+			[#else]
+			KindEditor.ready(function(K) {
+				${id} = K.create('textarea[name="${id}"]', {
+					width:"${width}",
+					height:"${height}",
+					themeType:"simple",
+					allowFileUpload : true,
+					uploadJson:"${base}/business/HtmlEditor/image_upload.html",
+					filterMode : false,
+					resizeType : 0,
+					afterBlur: function(){this.sync();},
+					items : [
+						'fontname', 'fontsize', 'lineheight' , '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+						'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright',  '|', 'emoticons', 'image', 'link']
+				});
+			});
+			[/#if]
+			
+			
+
+</script>
+<textarea name="${id}"  id="${id}" style="width:${width};height:${height};visibility:hidden;" class="${class}">${value}</textarea>
+[/#macro]

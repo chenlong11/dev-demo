@@ -1,7 +1,7 @@
 package cn.ksource.service.dic;
 
-import cn.ksource.domain.sysDic.SysDicDto;
-import cn.ksource.domain.sysDicData.SysDicDataDto;
+import cn.ksource.domain.dic.SysDicDto;
+import cn.ksource.domain.dicData.SysDicDataDto;
 
 import java.util.List;
 
@@ -13,13 +13,19 @@ public interface SysDicService {
 
     void updateDic(SysDicDto sysDicDto);
 
-    void delDicById(String id);
+    void delDicById(Long id);
 
     List<SysDicDataDto> getDataListByCode(String dicCode);
 
     void saveDicData(SysDicDataDto sysDicDataDto);
 
-    void delDicDataById(String id);
+    void delDicDataById(Long id);
 
-    SysDicDto getDicById(String id);
+    SysDicDto getDicById(Long id);
+
+    SysDicDataDto getDicDataById(Long id);
+
+    void updateDicData(SysDicDataDto dataDto);
+
+    List<SysDicDataDto> getDataListByDicId(Long dicId);
 }

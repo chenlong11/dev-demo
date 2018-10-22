@@ -1,0 +1,90 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <title>预留角色</title>
+    [#include "/admin/include/adminHeader.html"/]
+</head>
+
+<body class="fullscreen">
+[#include "/admin/include/adminScript.html"/]
+[#include "/admin/include/adminMenu.html"/]
+
+<div class="fs_main clearfix">
+    <div class="fs_navtitle ">
+        <h2>预留角色列表</h2>
+        <div class="fsnt_btn">
+            <a class="operating_conmon" href="javascript:editRole();">
+                <span class="facilistright_forticon">增加</span>
+            </a>
+        </div>
+    </div>
+
+    <div id="role_table"></div>
+
+</div>
+
+<script>
+
+    var roleDialogIndex;
+
+    $(function () {
+        queryRoleList();
+    })
+
+    function queryRoleList() {
+        var param = {'orgId': '${RequestParameters.orgId}'};
+        var options = {
+            id: 'role_table',
+            url: '${ctx}/admin/role/reserveList',
+            param: param,
+            pageSize: 10,
+            columns: [
+                {field: '_index', title: '序号', width: '15%'},
+                {field: 'roleName', title: '名称', width: '25%'},
+                {field: 'roleCode', title: '编码', width: '25%'},
+                {field: 'sn', title: '顺序号', width: '15%'},
+                {
+                    title: '操作', width: '33%', class: "list_btnmore_wrap", customize: function (index, item) {
+                    var htmlstr = '<a class="blue_txt" href="javascript:roleModule(\'' + item.id + '\')"><span>模块</span></a> ';
+                    return htmlstr;
+                }
+                }
+            ]
+        };
+        paging(options);
+    }
+
+    function roleModule(id) {
+        id = id || '';
+        roleDialogIndex = openDialog({
+            url: '${ctx}/admin/role/' + id + '/module',
+            params: {'orgId': '${RequestParameters.orgId}'},
+            btn: ['确定', '关闭'],
+            yes: function (index, layero) {
+                subRoleModule(id);
+            }
+        });
+    }
+
+    function subRoleModule(id) {
+        var moduleId = [];
+        $('#module_form').find(':checkbox[name=moduleId]:checked').each(function () {
+            moduleId.push($(this).val());
+        });
+        $.post( '${ctx}/admin/role/' + id + '/module',{moduleId:moduleId},function (res) {
+            if (res.status != 10000) {//登陆失败，提示错误信息
+                errMsg(res.msg);
+                return;
+            }
+            sucessMsg(function () {
+                layer.close(roleDialogIndex);
+                queryRoleList();
+            });
+        },'json');
+    }
+
+</script>
+
+[#include "/admin/include/adminFooter.html" /]
+</body>
+</html>

@@ -6,7 +6,7 @@ import cn.hutool.crypto.Padding;
 import cn.hutool.crypto.symmetric.AES;
 import cn.ksource.constants.Constants;
 import cn.ksource.domain.response.ResponseResult;
-import cn.ksource.service.LocalAuth.SysLocalAuthService;
+import cn.ksource.service.LocalAuth.LocalAuthService;
 import cn.ksource.util.ContextUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class AdminController {
 
     @Autowired
-    private SysLocalAuthService sysLocalAuthService;
+    private LocalAuthService sysLocalAuthService;
 
     @GetMapping("/login")
     public String login() {
@@ -51,4 +51,5 @@ public class AdminController {
     public String nopermission() {
         return "/admin/nopermission";
     }
+
 }

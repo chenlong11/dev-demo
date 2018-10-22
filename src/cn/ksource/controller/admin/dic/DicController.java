@@ -2,7 +2,7 @@ package cn.ksource.controller.admin.dic;
 
 import cn.hutool.core.util.StrUtil;
 import cn.ksource.domain.response.ResponseResult;
-import cn.ksource.domain.sysDic.SysDicDto;
+import cn.ksource.domain.dic.SysDicDto;
 import cn.ksource.service.dic.SysDicService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -35,9 +35,9 @@ public class DicController {
     }
 
     @GetMapping(value = {"/edit","/edit/{id}"})
-    public String getDemoEdit(@PathVariable(required = false) String id, Model model){
+    public String getEdit(@PathVariable(required = false,value = "id") Long id, Model model){
         SysDicDto dicDto = new SysDicDto();
-        if (StrUtil.isNotBlank(id)) {
+        if (id != null) {
             dicDto = dicService.getDicById(id);
         }
         model.addAttribute("info", dicDto);
@@ -46,7 +46,7 @@ public class DicController {
 
     @PostMapping(value = {"/edit","/edit/{id}"})
     @ResponseBody
-    public ResponseResult postDemoEdit(@PathVariable(required = false) String id, SysDicDto dicDto){
+    public ResponseResult postEdit(@PathVariable(required = false,value = "id") String id, SysDicDto dicDto){
         if (StrUtil.isBlank(id)) {
             dicService.saveDic(dicDto);
         }else {
@@ -57,7 +57,7 @@ public class DicController {
 
     @PostMapping("/del/{id}")
     @ResponseBody
-    public ResponseResult delDemo(@PathVariable String id) {
+    public ResponseResult del(@PathVariable("id") Long id) {
         dicService.delDicById(id);
         return new ResponseResult();
     }

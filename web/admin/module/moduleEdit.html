@@ -4,6 +4,7 @@
         <input type="hidden" name="id" value="${info.id}"/>
         <input type="hidden" name="pid" id="pid" value="${RequestParameters.pid}"/>
         <input type="hidden" name="lv" value="${RequestParameters.lv}"/>
+        <input type="hidden" name="moduleType" value="1"/>
         <table class="edit_layout2">
             <tr>
                 <th><label class="required">名称：</label></th>
@@ -56,7 +57,8 @@
         submitHandler: function() {
             $.post('${ctx}/admin/module/edit/${info.id}',$('#form').serializeObject(),function (res) {
                 if (res.status != 10000) {//登陆失败，提示错误信息
-                    errMsg();
+                    errMsg(res.msg);
+                    return;
                 }
                 sucessMsg(function () {
                     closeAllDialog();

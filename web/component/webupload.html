@@ -1,0 +1,125 @@
+<!-- 参数说明
+*	extensions 文件扩展名 示例：'jpg,bmp,png'
+*	fileSizeLimit 总文件大小(Byte)
+*	multiple 是否支持多选
+*	fileList 文件列表
+ -->
+<script type="text/javascript" src="${ctx}/static/plugins/webupload/webuploader.nolog.min.js"></script>
+<link rel="stylesheet" type="text/css" href="${ctx}/static/plugins/webupload/webuploader.css"/>
+[#macro upload id="picker" extensions="xls,xlsx,ppt,pptx,doc,docx,txt,pdf,7z,rar,zip,gif,jpg,jpeg,png,vsd,mpp" fileSizeLimit="52428800" file_type=""  multiple="false" fileList=[] cateId="-1" duplicate="true"]
+
+
+<ul id="fileList${id}" class="file_list">
+<input id="${id}" type="hidden" class="upload" [#if fileList??&&fileList?size>0]value="true"[#else]value=""[/#if]  />
+[#if fileList??&&fileList?size>0]
+[#list fileList as file]
+	<li>
+		<span><a href="${base}/business/pages/document/downDocument.html?fileId=${file.id}" target="_blank">${file.fileName}</a></span>
+		&nbsp;&nbsp;<a class="file_del blue_txt">删除</a>
+		<input type="hidden" name="fileId" value="${file.id}">
+		<input type="hidden" name="fileName" value="${file.fileName}">
+		<input type="hidden" name="filePath" value="${file.FILE_PATH}">
+		<input type="hidden" name="fileExt" value="${file.fileExt}">
+		<input type="hidden" name="fileSize" value="${file.fileSize}">
+		<input type="hidden" name="cateId" value="${file.cateId}">
+		<input type="hidden" name="fileVersion" value="${file.fileVersion}">
+		<input type="hidden" name="isLatest" value="${file.isLatest}">
+		<input type="hidden" name="sortNo" value="${file.sortNo}">
+		<input type="hidden" name="fileType" value="${file.fileType}">
+	</li>
+[/#list]
+[/#if]
+</ul>
+<div id="p_${id}">附件上传</div>
+<div id="${id}Tip" style="display:inline-block;"></div>
+<script type="text/javascript">
+$(function() {
+
+	var uploader${id} = WebUploader.create({
+		swf : '${ctx}/static/plugins/webupload/Uploader.swf',
+		server : '${base}/business/pages/document/uploadSysDocument.html',
+		pick : {
+			id : "#p_${id}",
+			multiple : ${multiple}
+		},
+		accept : {
+			extensions: '${extensions}'
+		},
+		fileSizeLimit : ${fileSizeLimit}, //总文件大小限制
+		auto : true,//是否自动上传
+		resize : false, // 不压缩image
+		chunked : true,	// 开启分片上传
+		duplicate: ${duplicate} //是否可以重复上传
+	});
+
+	uploader${id}.on( 'fileQueued', function( file ) {
+	    //是否上传多个文件
+		[#if multiple+""=="false"]
+			$("#fileList${id} li").remove();
+		[/#if]
+
+		var $li = $('<li id="'+file.id+'">'+
+						'<span><a target="_blank" style="cursor: default;">'+file.name+'</a></span>'+
+						'<div class="slide" style="width:100px;" ><div class="progress slidecon"></div></div>'+
+						'&nbsp;&nbsp;<a class="file_del blue_txt">删除</a>'+
+					'</li>');
+		$("#fileList${id}").append( $li );
+		//上传文件后，id赋值
+		$("#${id}").val("true");
+	});
+
+	// 文件上传过程中创建进度条实时显示。
+	uploader${id}.on( 'uploadProgress', function( file, percentage ) {
+		$("#"+file.id).find(".progress").width(percentage * 100);
+	});
+
+	//上传成功，回显地址和文件名
+	uploader${id}.on( 'uploadSuccess', function( file , response ) {
+	    if($.util.isEmpty(response.fileId)){
+            $("#"+file.id).find("a:last").after('&nbsp;&nbsp;<span>上传出错</span>');
+		}else {
+            $input=$('<input type="hidden" name="fileId" value="'+response.fileId+'" />' +
+                    '<input type="hidden" name="fileName" value="'+response.fileName+'" />' +
+                    '<input type="hidden" name="filePath" value="'+response.filePath+'" />' +
+                    '<input type="hidden" name="fileExt" value="'+response.fileExt+'" />' +
+                    '<input type="hidden" name="fileSize" value="'+response.fileSize+'" />' +
+                    '<input type="hidden" name="cateId" value="${cateId}" />' +
+                    '<input type="hidden" name="fileVersion" value="'+response.fileVersion+'" />' +
+                    '<input type="hidden" name="isLatest" value="'+response.isLatest+'" />' +
+                    '<input type="hidden" name="fileType" value="${file_type}" />' +
+                    '<input type="hidden" name="sortNo" value="'+response.sortNo+'" />');
+			$("#"+file.id).append($input);
+		}
+	});
+
+	//上传错误
+	uploader${id}.on( 'uploadError', function( file , reason ) {
+		$("#"+file.id).find("a:last").after('&nbsp;&nbsp;<span>上传出错</span>');
+	});
+
+	//无论上传是否成功 ，取消进度条显示
+	uploader${id}.on( 'uploadComplete', function( file ) {
+	    $( '#'+file.id ).find('.progress').parent().fadeOut();
+	});
+
+	//通用错误
+	uploader${id}.on( 'uploadComplete', function( file ) {
+	    $( '#'+file.id ).find('.progress').parent().fadeOut();
+	});
+
+	//删除文件
+    $(document).on('click', '.file_del', function() {
+        var $parent = $(this).parent();
+        //如果文件上传中，从上传队列中移除
+        if($parent.find("input[name=filePath]").lenght<=0){
+            uploader${id}.removeFile( $parent.attr("id"), true);
+        }
+        $parent.remove();
+        if($("#fileList${id}").find("li").length<=0){
+            $("#${id}").val("");
+        }
+    });
+
+})
+</script>
+[/#macro]

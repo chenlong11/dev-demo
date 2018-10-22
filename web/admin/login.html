@@ -113,10 +113,9 @@
             $("#logining").show();
             $("#usernameerr,#passworderr,#codeerr").hide();
 
-            $.post('${ctx}/admin/login',$('#myform').serializeObject(),function (data) {
-                console.log(data)
-                if (data.status != 10000) {//登陆失败，提示错误信息
-                    showCheckMsg('username',data.msg);
+            $.post('${ctx}/admin/login',$('#myform').serializeObject(),function (res) {
+                if (res.status != 10000) {//登陆失败，提示错误信息
+                    showCheckMsg('username',res.msg);
                     $('#password').val('');
                     $('#code').val('');
                     changeCode();

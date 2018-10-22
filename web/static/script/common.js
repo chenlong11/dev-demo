@@ -51,6 +51,8 @@ function asynchronous_page(opts) {
         $("#" + opts["table_id"]).find("tr:gt(0)").remove();
         //分页内容组装
         if (("data" in res) && res.data.list.length > 0) {
+            console.log('res.data.list ', res.data.list);
+
             $.each(res.data.list, function (i, data) {
                 var $tr = $("<tr></tr>");
                 $.each(opts.columns, function (j, item) {
@@ -63,10 +65,10 @@ function asynchronous_page(opts) {
                         $td.html(item.customize(index, data));
                     } else {
                         if ("field" in item) {
-                            if(item.field == '_index'){
+                            if (item.field == '_index') {
                                 var index = ((opts["curr"] - 1) * opts.pageSize) + i + 1;
                                 $td.text(index);
-                            }else{
+                            } else {
                                 $td.text(data[item.field]);
                             }
                         }
@@ -105,8 +107,9 @@ function sucessMsg(fun) {
 }
 
 //操作失败弹出框
-function errMsg(fun) {
-    openMsg('操作失败', fun);
+function errMsg(title, fun) {
+    title = title || '操作失败';
+    openMsg(title, fun);
 }
 
 function openMsg(title, fun) {
@@ -115,7 +118,7 @@ function openMsg(title, fun) {
         return false;
     };
     top.layer.confirm(title, {
-        btn: ['确认']
+        btn: ['确认', '取消']
     }, function () {
         layer.close(layer.index);
         fun();
@@ -148,12 +151,19 @@ $.fn.serializeObject = function () {
 };
 
 /*
-    加载多级树
+    加载基础多级树
  */
 function initTree(opt, rootId, lv) {
 
+    var conf = {
+        leafClick: false,//叶子节点是否可点击
+        params: {}
+    };
+    $.extend(conf, opt);
+
     var tree = {
         createTree: function (list, opt, rootId, lv) {
+
             rootId = rootId || '-1';
             lv = lv || '0';
             var rootLv = parseInt(lv) - 1;
@@ -163,7 +173,7 @@ function initTree(opt, rootId, lv) {
 
             //初始化树容器
             if (!opt['initContainer']) {
-                $('#' + opt.id).html("");
+                $('#' + opt.id + ' #' + opt.id).html("");
                 $div = $('<div class="ntt_title"><span></span><a>' + opt.title + '</a></div>' +
                     '<div class="three_tree" id="' + rootId + '" lv = "' + rootLv + '"></div>')
                 $div.children('a').click(function () {
@@ -180,10 +190,10 @@ function initTree(opt, rootId, lv) {
             if (list) {
                 var $ul = $('<ul></ul>');
                 //不是第一层，则折叠
-                if (!$('#' + rootId).hasClass('three_tree')) {
+                if (!$('#' + opt.id + ' #' + rootId).hasClass('three_tree')) {
                     $ul.css('display', 'none');
                 }
-                $('#' + rootId).append($ul);
+                $('#' + opt.id + ' #' + rootId).append($ul);
                 list.forEach(function (item) {
                     var node = {id: item['id'], name: item[opt.nodeName], pid: rootId};
                     tree.addNode(node);
@@ -195,13 +205,21 @@ function initTree(opt, rootId, lv) {
         },
         addNode: function (node) {
             tree.removeNode(node.id);
-            $pnode = $('#' + node.pid);
+            $pnode = $('#' + opt.id + ' #' + node.pid);
+
             var lv = parseInt($pnode.attr('lv') || 0) + 1;
             var $li = $('<li id="' + node.id + '" lv = "' + lv + '"><span></span><a>' + node.name + '</a>');
 
             if (lv == opt.maxLv) {//如果达到最大级别 转换样式
                 $li.children('span:first').addClass('last');
-                $li.children('a:first').css('cursor', 'default');
+                if(opt.leafClick){
+                    $li.children('a').click(function () {
+                        opt.clickFun(node.id, lv);
+                    })
+                    $li.children('a:first').css('cursor', 'pointer');
+                } else {
+                    $li.children('a:first').css('cursor', 'default');
+                }
             } else {//非最大级别，添加点击事件
                 $li.children('a').click(function () {
                     opt.clickFun(node.id, lv);
@@ -214,14 +232,13 @@ function initTree(opt, rootId, lv) {
             $pnode.children('ul:first').append($li);
         },
         removeNode: function (nodeId) {
-            $('#' + nodeId).remove();
+            $('#' + opt.id + ' #' + nodeId).remove();
         },
         initEvent: function () {
             //防止重复绑定
             $(document).off('click', 'div .three_tree li');
             $(document).off('click', 'div .three_tree a ');
             $(document).off('click', 'div .ntt_title a');
-
 
             //树加载
             $(document).on('click', 'div .three_tree li', function (event) {
@@ -255,9 +272,6 @@ function initTree(opt, rootId, lv) {
             nodeId = nodeId || '';
             this.extendPNode($('#' + nodeId));
 
-
-
-
             if ($('#' + nodeId + ' a').length > 0) {
                 $('#' + nodeId + ' a:first').trigger('click');
             }
@@ -270,11 +284,12 @@ function initTree(opt, rootId, lv) {
         }
     };
 
+    $.post(opt.url, opt.params, function (res) {
 
-    $.post(opt.url, {}, function (res) {
-        if (res.status != 10000){
+        if (res.status != 10000) {
             return;
         }
+
         tree.createTree(res.data, opt, rootId, lv);
         tree.initEvent();
         if (opt.curNodeId) {
@@ -286,33 +301,58 @@ function initTree(opt, rootId, lv) {
 }
 
 /**
+ * 加载checkBox树
+ * @param opt
+ * @param rootId
+ * @param lv
+ */
+function initCheckBoxTree(opt, rootId, lv) {
+    var tree = {
+        createTree: function (list) {
+
+        }
+    }
+}
+
+/**
  * 打开弹出框
  * @param obj
  */
 function openDialog(obj) {
+    var dialogIndex;
 
     if (!obj.url) {
         console.log(' url 不能为空 ');
         return;
     }
 
-    obj.params = obj.params || {};
+    console.info('open dialog url is :', obj.url);
 
-    $.get(obj.url, obj.params, function (data) {
-        obj = obj || {};
-        var conf = {
-            type: 1,
-            title: " ",
-            area: ['60%', '70%'],
-            btn: ['关闭'],
-            move: false,
-            maxmin: true,
-            scrollbar: false,
-            content: data
-        };
-        $.extend(conf, obj);
-        top.layer.open(conf);
-    })
+    obj.params = obj.params || {};
+    $.ajax({
+        type: 'get',
+        url: obj.url,
+        data: obj.params,
+        async: false,
+        success: function (data) {
+            obj = obj || {};
+            var conf = {
+                type: 1,
+                title: " ",
+                area: ['60%', '70%'],
+                btn: ['关闭'],
+                move: false,
+                maxmin: true,
+                scrollbar: false,
+                content: data
+            };
+            $.extend(conf, obj);
+            dialogIndex = top.layer.open(conf);
+        }
+    });
+
+    return dialogIndex;
+
 }
 
 /**
@@ -321,5 +361,5 @@ function openDialog(obj) {
 function crypPwd(pwd) {
     var key = CryptoJS.enc.Utf8.parse('6543210987654321');
     var iv = CryptoJS.enc.Utf8.parse('1234567890123456');
-    return CryptoJS.AES.encrypt(pwd,key,{iv:iv,mode:CryptoJS.mode.CBC,padding:CryptoJS.pad.Pkcs7});
+    return CryptoJS.AES.encrypt(pwd, key, {iv: iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7});
 }

@@ -1,9 +1,8 @@
 package cn.ksource.util;
 
 import cn.hutool.core.convert.Convert;
-import cn.hutool.core.lang.Console;
-import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.map.LinkedMap;
 
 import java.util.*;
 
@@ -24,14 +23,19 @@ public class TreeUtil {
 		LinkedHashMap<String,Map> dataMap = new LinkedHashMap<String,Map>();
 		//将数据LIST放置到MAP中
 		for(T obj:dataList){
-			Map map = ConvertSupport.object2map(obj);
+			Map map = new LinkedMap();
+			if(obj instanceof Map){
+				map = (Map) obj;
+			} else {
+				map = ConvertSupport.object2map(obj);
+			}
 			dataMap.put(Convert.toStr(map.get("id")),map);
 		}
 
 		//组装树
 		for(String key:dataMap.keySet()){
 			String pid = Convert.toStr((((Map) dataMap.get(key)).get("pid")));
-			if(pid.equals("")||pid.equals("0")||dataMap.get(pid)==null){
+			if(pid.equals("-1")||dataMap.get(pid)==null){
 				((List<Map>)root.get("children")).add((Map)dataMap.get(key));
 			}else{
 				Map parentNode = (Map)dataMap.get(pid);

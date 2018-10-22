@@ -492,7 +492,7 @@ footer a {
     background: #007cce;
     height: 40px;
     color: #fff;
-    font: 12px "宋体";
+    font: 12px "微软雅黑";
     z-index: 1000;
 }
 
@@ -1268,7 +1268,7 @@ footer a {
 
 /*展示性表格display_form*/
 .display_form {
-    margin: 15px auto;
+    /*margin: 15px auto;*/
     border: 1px solid #e9e9e9;
     width: 96%;
     color: #333333;
@@ -1278,16 +1278,13 @@ footer a {
 
 .display_form td {
     padding: 10px;
-    border-bottom: 1px solid #e9e9e9;
+    border: 1px solid #e9e9e9;
 }
 
 .display_form tr.merge {
     background-color:#ebf6ff;
 }
 
-.display_form tr.title {
-    box-shadow: 0 2px 2px 0 #e9e9e9;
-}
 
 .display_form tr.title td {
     background: #f0f0f0;
@@ -7762,7 +7759,7 @@ table.service_btn a.logo img {
 }
 
 .facieditlistright_navtitle {
-    padding: 0px;
+    padding: 0px 0 15px 0;
 }
 
 .facieditlistright .facilistright_sorticon {

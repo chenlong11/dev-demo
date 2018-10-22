@@ -1,0 +1,100 @@
+[#macro excExport id ="" name="" ]
+<script language="javascript" src="${ctx}/static/plugins/print/LodopFuncs.js"></script>
+<script language="javascript" src="${ctx}/static/plugins/export/js/shim.js"></script>
+<script language="javascript" src="${ctx}/static/plugins/export/js/xlsx.full.min.js"></script>
+<script language="javascript" src="${ctx}/static/plugins/export/js/Blob.js"></script>
+<script language="javascript" src="${ctx}/static/plugins/export/js/FileSaver.js"></script>
+<script language="javascript" src="${ctx}/static/plugins/export/js/swfobject.js"></script>
+<script language="javascript" src="${ctx}/static/plugins/export/js/downloadify.min.js"></script>
+<script language="javascript" src="${ctx}/static/plugins/export/js/base64.min.js"></script>
+
+    <!--[if lte IE 9]>
+    <a id="export_btn" style="float:right" tableId="${id}" fn="${name}">Flash required</a>
+    <![endif]-->
+    <a class="common export" href="javascript:exportXlsById('${id}','${name}');"><span>导出</span></a>
+
+<script type="text/javascript">
+    function exportXlsById(id, name) {
+        if($.util.isEmpty(name)){
+            var title =$(".titleTr").text();
+            if($.util.isEmpty(title)){
+                name ="excel导出表"
+            }else{
+                name = title.trim();
+            }
+        }
+        name = name + ".xlsx";
+        export_table_to_excel(id,'xlsx',name);
+    }
+    function s2ab(s) {
+        if(typeof ArrayBuffer !== 'undefined') {
+            var buf = new ArrayBuffer(s.length);
+            var view = new Uint8Array(buf);
+            for (var i=0; i!=s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
+            return buf;
+        } else {
+            var buf = new Array(s.length);
+            for (var i=0; i!=s.length; ++i) buf[i] = s.charCodeAt(i) & 0xFF;
+            return buf;
+        }
+    }
+
+    function export_table_to_excel(id, type, fn) {
+        var wb = XLSX.utils.table_to_book(document.getElementById(id), {sheet:"Sheet JS"});
+        var wbout = XLSX.write(wb, {bookType:type, bookSST:true, type: 'binary'});
+        if(fn){
+            var fname = fn || 'down.' + type;
+            try {
+                saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream;"}), fname);
+            } catch(e) {
+                if(typeof console != 'undefined') console.log(e, wbout);
+            }
+        }
+        return wbout;
+    }
+
+    //打印方法
+    var staticUrl = '${base}';
+    var LODOP; //声明为全局变量
+
+    //A4打印 type: 1=横向 2=纵向
+    function printA4(type,dom) {
+        LODOP=getLodop();
+        CreateOneFormPage(type,dom);
+        LODOP.PREVIEW();
+    };
+
+
+
+    function CreateOneFormPage(type,dom){
+        var strStyleCSS="<link href='${ctx}/static/ui/css/printa4-table.css' type='text/css' rel='stylesheet'>";
+        var strFormHtml=strStyleCSS+"<body>"+document.getElementById(dom).innerHTML+"</body>";
+        LODOP.SET_PRINT_PAGESIZE(type,0,0,"A4");
+        LODOP.SET_PRINT_STYLEA(1,"Angle",90);
+        LODOP.ADD_PRINT_HTM("1.0cm","0.5cm","RightMargin:0.9cm","BottomMargin:9mm",strFormHtml);
+    };
+</script>
+<!--[if lte IE 9]>
+<script type="text/javascript">
+    $(function(){
+        $(".common.export").remove();
+        var tableId = $("#export_btn").attr("tableId");
+        var fn = $("#export_btn").attr("fn")+".xlsx";
+
+        Downloadify.create('export_btn',{
+            swf: '${ctx}/static/plugins/export/media/downloadify.swf',
+            downloadImage: '${ctx}/static/plugins/export/images/download.png',
+            width: 85,
+            height: 24,
+            filename: fn, data: function() { var o = export_table_to_excel(tableId, 'xlsx'); return window.btoa(o); },
+            transparent: false,
+            append: false,
+            dataType: 'base64',
+            onComplete: function(){ top.layer.msg('保存成功!');},
+            onCancel: function(){ },
+            onError: function(){ top.layer.msg('出错了!'); }
+        });
+    })
+</script>
+<![endif]-->
+[/#macro]

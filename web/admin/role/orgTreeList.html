@@ -1,0 +1,50 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <title>角色管理</title>
+    [#include "/admin/include/adminHeader.html"/]
+</head>
+
+<body class="fullscreen">
+[#include "/admin/include/adminScript.html"/]
+[#include "/admin/include/adminMenu.html"/]
+
+<div class="fs_main equip_add clearfix monitor_report" >
+    <div class="ucmLeft">
+        <div id="org_tree"></div>
+    </div>
+    <div id = "list" class="expert_base" style="width:75%;">
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    $(function () {
+        queryOrgTree('');
+    })
+
+    function queryOrgTree(curNodeId) {
+        var opt = {
+            'url' : '${ctx}/admin/role/orgTree',
+            'title': '机构信息',
+            'id': 'org_tree',
+            'maxLv': 3,
+            'nodeName': 'orgName',
+            'curNodeId':curNodeId,
+            'clickFun': function (id, lv) {
+                loadOrgList(id,lv);
+            }
+        };
+        initTree(opt, -1, '1');
+    }
+
+    function loadOrgList(pid, lv) {
+        $.get('${ctx}/admin/role/orgList',{'pid':pid,'lv':lv},function (data) {
+            $('#list').html(data);
+        });
+    }
+
+</script>
+[#include "/admin/include/adminFooter.html" /]
+</body>
+</html>

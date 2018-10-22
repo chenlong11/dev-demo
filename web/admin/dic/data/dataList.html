@@ -1,0 +1,68 @@
+<div class="fs_main clearfix">
+    <div class="fs_navtitle">
+        <h2>字典数据列表</h2>
+        <div class="fsnt_btn">
+            <a class="operating_conmon"  href="javascript:editData();">
+                <span class="facilistright_forticon">增加</span>
+            </a>
+        </div>
+    </div>
+    <div id="data-table"></div>
+</div>
+
+<script>
+
+    var dataEditIndex;
+
+    $(function () {
+        queryData();
+    })
+
+    function queryData() {
+        var options = {
+            id: 'data-table',
+            url: '${ctx}/admin/dic/${dicId}/data/list',
+            param: {},
+            pageSize: 10,
+            columns: [
+                {field: 'dataVal', title: '值', width: '30%'},
+                {field: 'dataCode', title: '编码', width: '30%'},
+                {field: 'sn', title: '顺序号', width: '10%'},
+                {
+                    title: '操作', width: '20%', class:"list_btnmore_wrap",customize: function (index, item) {
+                    var htmlstr = '<a class="blue_txt lb_button" href="javascript:editData(\'' + item.id + '\')"><span>修改</span></a>  '
+                        + '<a class="blue_txt" href="javascript:delData(\'' + item.id + '\')"><span>删除</span></a>';
+                    return htmlstr;
+                }
+                }
+            ]
+        };
+        paging(options);
+    }
+
+    function editData(id) {
+        id = id || '';
+        dataEditIndex = openDialog({
+            url: '${ctx}/admin/dic/${dicId}/data/edit/' + id,
+            btn: ['确定', '关闭'],
+            yes: function (index, layero) {
+                $('#data-form').submit();
+            }
+        });
+        console.log('dataEditIndex is ', dataEditIndex);
+    }
+
+    function delData(id) {
+        openMsg("确定要删除么",function () {
+            $.post('${ctx}/admin/dic/${dicId}/data/del/'+id,{},function (res) {
+                if(res.status!=10000) {
+                    errMsg(res.msg);
+                    return;
+                }
+                sucessMsg(function () {
+                    queryData();
+                });
+            },'json');
+        })
+    }
+</script>

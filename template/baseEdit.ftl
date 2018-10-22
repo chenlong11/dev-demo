@@ -36,9 +36,10 @@
             submitHandler: function() {
                 $('#form').ajaxSubmit({
                     dataType: 'json',
-                    success: function (data) {
-                        if (data.status != 1) {
-                            errMsg();
+                    success: function (res) {
+                        if (res.status != 10000) {
+                            errMsg(res.msg);
+                            return;
                         }
                         sucessMsg(function () {
                             closeAllDialog();

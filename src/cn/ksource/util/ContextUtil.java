@@ -1,7 +1,7 @@
 package cn.ksource.util;
 
 import cn.ksource.constants.Constants;
-import cn.ksource.domain.sysUser.SysUserDto;
+import cn.ksource.domain.user.SysUserDto;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.context.request.ServletWebRequest;
@@ -49,6 +49,18 @@ public class ContextUtil {
     public static void clearAdminSession() {
         removeSessionAttr(Constants.USER_LOGIN_IDENTIFY);
         invalidateSesession();
+    }
+
+    public static Long getLoginUserId() {
+        return getLoginUser().getId();
+    }
+
+    public static Long getLoginUserOrgId() {
+        return getLoginUser().getOrgId();
+    }
+
+    public static String getLoginUserName() {
+        return getLoginUser().getUserName();
     }
 
 }

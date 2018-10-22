@@ -3,6 +3,9 @@ package cn.ksource.util;
 import cn.hutool.crypto.digest.DigestAlgorithm;
 import cn.hutool.crypto.digest.Digester;
 
+/**
+ * 加密工具类
+ */
 public class CryptUtil {
 
     public static String getEncryptPassword(String account,String password) {

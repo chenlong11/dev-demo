@@ -3,12 +3,15 @@ package cn.ksource.handler;
 import cn.ksource.constants.ExceptionConstants;
 import cn.ksource.domain.response.ResponseResult;
 import cn.ksource.exception.*;
+import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
@@ -59,13 +62,27 @@ public class Exceptionhandler {
     }
 
     @ExceptionHandler(value = Exception.class)
-    @ResponseBody
-    private ResponseResult ParamExceptionHandler(HttpServletRequest req, Exception e) {
+    private String ParamExceptionHandler(HttpServletRequest req, HttpServletResponse resp ,Exception e) {
+        //打印日志
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
         e.printStackTrace(pw);
         log.error(sw.toString());
-        return new ResponseResult(ExceptionConstants.SERVER_ERR, "服务器异常");
+
+        if (!(req.getHeader("accept").contains("application/json")//非异步请求
+                || (req.getHeader("X-Requested-With")!= null && req.getHeader("X-Requested-With").contains("XMLHttpRequest")))){
+            return "/500";
+        } else {
+            try {
+                PrintWriter writer = resp.getWriter();
+                writer.write(JSON.toJSONString(new ResponseResult(ExceptionConstants.SERVER_ERR, "服务器异常")));
+                writer.flush();
+                return null;
+            } catch (IOException io) {
+                io.printStackTrace();
+                return null;
+            }
+        }
     }
 
 }

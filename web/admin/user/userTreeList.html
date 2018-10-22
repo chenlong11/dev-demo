@@ -1,0 +1,40 @@
+<div class="fs_main equip_add clearfix monitor_report">
+    <div class="ucmLeft">
+        <div id="dept_tree"></div>
+    </div>
+    <div id="user_list" class="expert_base" style="width:75%;">
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    $(function () {
+        queryDeptTree('');
+    })
+
+    function queryDeptTree(curNodeId) {
+        var opt = {
+            'url': '${ctx}/admin/user/deptTree',
+            'title': '部门信息',
+            'params': {'orgId': '${RequestParameters.orgId}'},
+            'id': 'dept_tree',
+            'maxLv': 1,
+            'nodeName': 'deptName',
+            'curNodeId': curNodeId,
+            'leafClick': true,
+            'clickFun': function (id, lv) {
+                loadUserList(id, lv);
+            }
+        };
+        initTree(opt, -1, '1');
+    }
+
+    function loadUserList(deptId, lv) {
+        var orgId = '${RequestParameters.orgId}';
+        $.get('${ctx}/admin/user/list', {'deptId': deptId, 'orgId': orgId}, function (data) {
+            $('#user_list').html(data);
+        });
+    }
+
+</script>
+

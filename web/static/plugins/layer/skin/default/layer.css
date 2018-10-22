@@ -93,7 +93,7 @@ html #layuicss-skinlayercss {
 }
 
 .layui-layer {
-    border-radius: 5px;
+    border-radius: 0;
     -webkit-animation-fill-mode: both;
     animation-fill-mode: both;
     -webkit-animation-duration: .3s;

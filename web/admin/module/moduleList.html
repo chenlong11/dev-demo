@@ -1,6 +1,6 @@
 <div class="facieditlistright">
     <div class="fs_navtitle facieditlistright_navtitle" id="fsNavtitle">
-        <h2>系统功能列表</h2>
+        <h2>模块列表</h2>
         <div class="fsnt_btn">
             <a class="operating_conmon"  href="javascript:edit();">
                 <span class="facilistright_forticon">增加</span>
@@ -24,11 +24,11 @@
             pageSize: 10,
             columns: [
                 {field: 'moduleName', title: '名称', width: '20%'},
-                {field: 'moduleCode', title: '编码', width: '30%'},
-                {field: 'moduleUrl', title: 'URL', width: '20%'},
+                {field: 'moduleCode', title: '编码', width: '25%'},
+                {field: 'moduleUrl', title: 'URL', width: '30%'},
                 {field: 'sn', title: '顺序号', width: '10%'},
                 {
-                    title: '操作', width: '33%', class:"list_btnmore_wrap",customize: function (index, item) {
+                    title: '操作', width: '20%', class:"list_btnmore_wrap",customize: function (index, item) {
                         var htmlstr = '<a class="blue_txt lb_button" href="javascript:edit(\'' + item.id + '\')"><span>修改</span></a>  '
                             + '<a class="blue_txt" href="javascript:del(\'' + item.id + '\')"><span>删除</span></a>';
                         return htmlstr;
@@ -54,10 +54,11 @@
     }
 
     function del(id) {
-        top.openMsg("确定要删除么",function () {
-            $.post('${ctx}/admin/module/del/'+id,{},function (data) {
-                if(data.status!=1) {
-                    errMsg();
+        openMsg("确定要删除么",function () {
+            $.post('${ctx}/admin/module/del/'+id,{},function (res) {
+                if(res.status!=10000) {
+                    errMsg(res.msg);
+                    return;
                 }
                 sucessMsg(function () {
                     queryTree('${RequestParameters.pid}');
@@ -65,6 +66,5 @@
             },'json');
         })
     }
-
 
 </script>

@@ -43,7 +43,8 @@
             submitHandler: function() {
                 $.post('${ctx}/admin/dic/edit/${info.id}',$('#form').serializeObject(),function (res) {
                     if (res.status != 10000) {
-                        errMsg();
+                        errMsg(res.msg);
+                        return;
                     }
                     sucessMsg(function () {
                         closeAllDialog();

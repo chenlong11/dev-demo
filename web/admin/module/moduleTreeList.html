@@ -1,7 +1,7 @@
 <!doctype html>
 <html class="no-js">
 <head>
-    <title>菜单管理</title>
+    <title>模块管理</title>
     [#include "/admin/include/adminHeader.html"/]
 </head>
 
@@ -22,13 +22,13 @@
     var tree;
 
     $(function () {
-        queryTree("");
+        queryTree('');
     })
 
     function queryTree(curNodeId) {
         var opt = {
             'url' : '${ctx}/admin/module/tree',
-            'title': '系统功能',
+            'title': '系统模块',
             'id': 'tree',
             'maxLv': 3,
             'nodeName': 'moduleName',
@@ -37,7 +37,7 @@
                 loadList(id,lv);
             }
         };
-        tree = initTree(opt, '-1', '1');
+        tree = initTree(opt, -1, '1');
     }
 
     function loadList(pid, lv) {

@@ -1,0 +1,176 @@
+<style>
+    /* 清除浮动 */
+    .clearfix:before, .clearfix:after {
+        content: "\0020";
+        display: block;
+        height: 0;
+        overflow: hidden;
+    }
+
+    .clearfix:after {
+        clear: both;
+    }
+
+    .clearfix {
+        zoom: 1;
+    }
+
+    .personwrap {
+        margin: 10px;
+    }
+
+    .personcont {
+        width: 100%;
+        font: 12px "宋体";
+        min-width: 800px;
+    }
+
+    .personalist {
+        border-bottom: dotted 1px #d1d1d1;
+        line-height: 30px;
+        padding: 8px 0;
+        overflow: hidden;
+        zoom: 1;
+    }
+
+    .personalistl {
+        width: 18%;
+        float: left;
+    }
+
+    .personalist span {
+        color: #434343;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .personalistTit {
+        margin-top: 5px;
+    }
+
+    .personalistTit span {
+        color: #1076e5;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    .personalist_chk {
+        margin: 9px 8px 10px 16px;
+        float: left;
+    }
+
+    .personalist_chkbox {
+        margin: 8px 8px 11px 20%;
+        float: left;
+    }
+
+    .personalistr {
+        float: left;
+        width: 82%;
+    }
+
+    .personalistr li {
+        width: 20%;
+        float: left;
+        color: #666;
+        list-style: none;
+        margin-bottom: 0px;
+    }
+
+    .personalistr li.li {
+        color: #333;
+    }
+
+    .personalistr li.li a {
+        color: #666;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .personalistr li.li a:hover {
+        color: #00f;
+    }
+</style>
+
+<script type="text/javascript">
+
+    $(function () {
+
+        $('#user_form span, #user_form a').click(function () {
+            var $checkbox = $(this).prev(':checkbox');
+            $checkbox.trigger('click');
+        });
+
+        $('#user_form :checkbox').click(function () {
+            checkParent($(this).attr('pid'), $(this).is(':checked'));
+            checkChildren($(this).val(), $(this).is(':checked'));
+        })
+
+        var nodes = JSON.parse('${roleUserlist}');
+        selectedNode(nodes);
+
+        function checkParent(pid, checked) {
+            var $p = $(':checkbox[value=' + pid + ']');
+
+            if(!checked && $(':checkbox[pid=' + pid + ']:checked').length <= 0) {
+                $p.prop('checked', false);
+            } else {
+                $p.prop('checked', true);
+            }
+            if ($(':checkbox[value=' + $p.attr('pid') + ']').length > 0) {
+                checkParent($p.attr('pid'), checked);
+            }
+        }
+
+        function checkChildren(id, checked) {
+            $(':checkbox[pid=' + id + ']').prop('checked', checked);
+            $(':checkbox[pid=' + id + ']').each(function () {
+                if($('[pid='+$(this).val()+']').length > 0) {
+                    checkChildren($(this).val(),checked);
+                }
+            })
+        }
+
+        function selectedNode(list) {
+            for(i = 0,len=list.length; i < len; i++) {
+                $('[value=' + list[i].id + ']').trigger('click');
+            }
+        }
+
+    })
+
+</script>
+
+<form id="user_form">
+    <input type="hidden" name="userId" value="-1"/>
+    <input type="hidden" name="roleId" value="${id}"/>
+    <div class="personcont">
+        <div class="panel">
+            <div class="personalist clearfix personalistTit">
+                <div class="personalistl">
+                    <input class="personalist_chk" name="deptId" value="-1" type="checkbox" pid="1"/>
+                    <span>角色人员：</span>
+                </div>
+            </div>
+
+            [#list depts as dept]
+            <div class="personalist clearfix personalistnon ejpanel">
+                <div class="personalistl">
+                    <input type="checkbox" class="personalist_chk personalist_chkbox" name="deptId" value="${dept.id}"
+                           pid="${dept.pid}"/>
+                    <span>${dept.deptName}：</span>
+                </div>
+                <div class="personalistr">
+                    [#list dept.users as user]
+                    <li class="li">
+                        <input type="checkbox" class="personalist_chk" name="userId" value="${user.id}"
+                               pid="${user.deptId}"/>
+                        <a href="#">${user.userName}</a>
+                    </li>
+                    [/#list]
+                </div>
+            </div>
+            [/#list]
+        </div>
+    </div>
+</form>

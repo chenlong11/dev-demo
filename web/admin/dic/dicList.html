@@ -21,8 +21,6 @@
     <div id="dic-table"></div>
 </div>
 
-[#include "/admin/include/adminScript.html"/]
-
 <script>
     $(function () {
         query();
@@ -35,13 +33,14 @@
             param: {},
             pageSize: 10,
             columns: [
-                {field: '_index', title: '顺序号', width: '10%'},
+                {field: '_index', title: '序号', width: '10%'},
                 {field: 'dicName', title: '名称', width: '30%'},
                 {field: 'dicCode', title: '编码', width: '30%'},
                 {field: 'sn', title: '顺序号', width: '10%'},
                 {
                     title: '操作', width: '20%', class:"list_btnmore_wrap",customize: function (index, item) {
-                        var htmlstr = '<a class="blue_txt lb_button" href="javascript:edit(\'' + item.id + '\')"><span>修改</span></a>  '
+                        var htmlstr = '<a class="blue_txt lb_button" href="javascript:editItem(\'' + item.id + '\')"><span>维护</span></a>' +
+                            '<a class="blue_txt lb_button" href="javascript:edit(\'' + item.id + '\')"><span>修改</span></a>  '
                             + '<a class="blue_txt" href="javascript:del(\'' + item.id + '\')"><span>删除</span></a>';
                         return htmlstr;
                     }
@@ -49,6 +48,13 @@
             ]
         };
         paging(options);
+    }
+
+    function editItem(id) {
+        openDialog({
+            title: "字典数据",
+            url: '${ctx}/admin/dic/' + id + '/data/list'
+        });
     }
 
     function edit(id) {
@@ -63,10 +69,11 @@
     }
 
     function del(id) {
-        top.openMsg("确定要删除么",function () {
-            $.post('${ctx}/admin/dic/del/'+id,{},function (data) {
-                if(data.status!=1) {
-                    errMsg();
+        openMsg("确定要删除么",function () {
+            $.post('${ctx}/admin/dic/del/'+id,{},function (res) {
+                if(res.status!=10000) {
+                    errMsg(res.msg);
+                    return;
                 }
                 sucessMsg(function () {
                     queryTree ();

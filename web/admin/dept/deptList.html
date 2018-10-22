@@ -1,0 +1,74 @@
+<div class="fs_main clearfix">
+    <div class="fs_navtitle ">
+        <h2>部门列表</h2>
+        <div class="fsnt_btn">
+            <a class="operating_conmon" href="javascript:editDept();">
+                <span class="facilistright_forticon">增加</span>
+            </a>
+        </div>
+    </div>
+
+    <div id="dept_table"></div>
+
+</div>
+
+<script>
+
+    var deptDialogIndex;
+
+    $(function () {
+        queryDeptList();
+    })
+
+    function queryDeptList() {
+        var param = {'orgId': '${RequestParameters.orgId}'};
+        var options = {
+            id: 'dept_table',
+            url: '${ctx}/admin/dept/list',
+            param: param,
+            pageSize: 10,
+            columns: [
+                {field: '_index', title: '序号', width: '20%'},
+                {field: 'deptName', title: '名称', width: '25%'},
+                {field: 'deptCode', title: '编码', width: '25%'},
+                {field: 'sn', title: '顺序号', width: '20%'},
+                {
+                    title: '操作', width: '33%', class: "list_btnmore_wrap", customize: function (index, item) {
+                    var htmlstr =  '<a class="blue_txt lb_button" href="javascript:editDept(\'' + item.id + '\')"><span>修改</span></a>  '
+                        + '<a class="blue_txt" href="javascript:delDept(\'' + item.id + '\')"><span>删除</span></a>';
+                    return htmlstr;
+                }
+                }
+            ]
+        };
+        paging(options);
+    }
+
+    function editDept(id) {
+        var orgId = '${RequestParameters.orgId}';
+        id = id || '';
+        deptDialogIndex = openDialog({
+            url: '${ctx}/admin/dept/edit/' + id,
+            params: {'orgId': orgId},
+            btn: ['确定', '关闭'],
+            yes: function (index, layero) {
+                $('#form').submit();
+            }
+        });
+    }
+
+    function delDept(id) {
+        openMsg("确定要删除么", function () {
+            $.post('${ctx}/admin/dept/del/' + id, {}, function (res) {
+                if (res.status != 10000) {
+                    errMsg(res.msg);
+                    return;
+                }
+                sucessMsg(function () {
+                    queryDeptList();
+                });
+            }, 'json');
+        })
+    }
+
+</script>

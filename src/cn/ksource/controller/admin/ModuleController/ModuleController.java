@@ -2,10 +2,10 @@ package cn.ksource.controller.admin.ModuleController;
 
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.StrUtil;
+import cn.ksource.domain.module.SysModuleDto;
 import cn.ksource.domain.response.ResponseResult;
-import cn.ksource.domain.sysModule.SysModuleDto;
 import cn.ksource.initialize.InitProcessor;
-import cn.ksource.service.SysModuleService;
+import cn.ksource.service.module.ModuleService;
 import cn.ksource.util.ContextUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -22,7 +22,7 @@ import java.util.Map;
 public class ModuleController {
 
     @Autowired
-    private SysModuleService moduleService;
+    private ModuleService moduleService;
 
     @GetMapping("/treeList")
     public String moduleTreeList() {
@@ -51,9 +51,9 @@ public class ModuleController {
     }
 
     @GetMapping(value = {"/edit","/edit/{id}"})
-    public String getDemoEdit(@PathVariable(required = false) String id, Model model){
+    public String getEdit(@PathVariable(required = false,value = "id") Long id, Model model){
         SysModuleDto moduleDto = new SysModuleDto();
-        if (StrUtil.isNotBlank(id)) {
+        if (id != null) {
             moduleDto = moduleService.getById(id);
         }
         model.addAttribute("info", moduleDto);
@@ -62,7 +62,7 @@ public class ModuleController {
 
     @PostMapping(value = {"/edit","/edit/{id}"})
     @ResponseBody
-    public ResponseResult postDemoEdit(@PathVariable(required = false) String id, SysModuleDto moduleDto){
+    public ResponseResult postEdit(@PathVariable(required = false,value = "id") String id, SysModuleDto moduleDto){
         if (StrUtil.isBlank(id)) {
             moduleService.save(moduleDto);
         }else {
@@ -73,13 +73,13 @@ public class ModuleController {
 
     @PostMapping("/del/{id}")
     @ResponseBody
-    public ResponseResult delDemo(@PathVariable String id) {
+    public ResponseResult del(@PathVariable("id") Long id) {
         moduleService.deleteById(id);
         return new ResponseResult();
     }
 
     @GetMapping("/redirect/{lv2ModuleId}")
-    public String redirect(@PathVariable String lv2ModuleId) {
+    public String redirect(@PathVariable("lv2ModuleId") String lv2ModuleId) {
         if (InitProcessor.allModule.containsKey(lv2ModuleId)) {
             String lv2ModuleCode = InitProcessor.allModule.get(lv2ModuleId);
             String lv1moduleCode = lv2ModuleCode.substring(0, lv2ModuleCode.indexOf(":"));

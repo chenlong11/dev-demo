@@ -1,0 +1,48 @@
+<div class="facieditlistright">
+    <div class="fs_navtitle facieditlistright_navtitle" id="fsNavtitle">
+        <h2>机构列表</h2>
+    </div>
+    <div id="org_table"></div>
+</div>
+
+<script>
+    $(function () {
+        queryOrgList();
+    })
+
+    function queryOrgList() {
+        var param = {'pid':'${RequestParameters.pid}'};
+        var options = {
+            id: 'org_table',
+            url: '${ctx}/admin/org/list',
+            param: param,
+            pageSize: 10,
+            columns: [
+                {field: '_index', title: '序号', width: '15%'},
+                {field: 'orgName', title: '名称', width: '25%'},
+                {field: 'orgCode', title: '编码', width: '30%'},
+                {field: 'sn', title: '顺序号', width: '10%'},
+                {
+                    title: '操作', width: '33%', class:"list_btnmore_wrap",customize: function (index, item) {
+                    var htmlstr = '<a class="blue_txt" href="javascript:userList(\'' + item.id + '\')"><span>人员维护</span></a> ';
+                    return htmlstr;
+                }
+                }
+            ]
+        };
+        paging(options);
+    }
+
+    function userList(orgId) {
+        orgId = orgId || '';
+        var index = openDialog({
+            title:'人员维护',
+            url: '${ctx}/admin/user/treeList',
+            params: {'orgId':orgId},
+            maxmin: true,
+            btn: ['关闭']
+        });
+        layer.full(index);
+    }
+
+</script>

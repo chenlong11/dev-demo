@@ -1,0 +1,62 @@
+<div class="end_task_body widthauto">
+<div class="edit_txt">
+    <form id="form" >
+        <input type="hidden" name="id" value="${info.id}"/>
+        <input type="hidden" name="pid" value="${RequestParameters.pid}"/>
+        <input type="hidden" name="lv" value="${RequestParameters.lv}"/>
+        <table class="edit_layout2">
+            <tr>
+                <th><label class="required">名称：</label></th>
+                <td>
+                    <input class="general" type="text" value="${info.orgName}" name="orgName" id="orgName"/>
+                </td>
+            </tr>
+            <tr>
+                <th><label class="required">编码：</label></th>
+                <td>
+                    <input class="general" type="text" value="${info.orgCode}" name="orgCode" id="orgCode"/>
+                </td>
+            </tr>
+            <tr>
+                <th><label class="required">顺序号：</label></th>
+                <td>
+                    <input class="general" type="text" value="${info.sn}" class="input-text" name="sn" id="sn"/>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+
+<script type="text/javascript">
+    $("#form").validate({
+        rules: {
+            orgName: {
+                required: true,
+                rangelength: [1, 30]
+            },orgCode: {
+                required: true,
+                rangelength: [1, 50]
+            },orgUrl: {
+                required: true,
+                rangelength: [1, 50]
+            },sn: {
+                digits:true,
+                max: 999
+            }
+        },
+        submitHandler: function() {
+            $.post('${ctx}/admin/org/edit/${info.id}',$('#form').serializeObject(),function (res) {
+                if (res.status != 10000) {//登陆失败，提示错误信息
+                    errMsg(res.msg);
+                    return;
+                }
+                sucessMsg(function () {
+                    closeAllDialog();
+                    queryTree('${RequestParameters.pid}');
+                });
+            },'json');
+        }
+    });
+</script>
+</div>

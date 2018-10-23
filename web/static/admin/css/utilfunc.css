@@ -425,7 +425,7 @@ a.operating_conmon.modify span{
 
 /*文件上传后文件列表*/
 ul.file_list{
-    margin:10px 0;
+    margin:0px 0 10px 0;
 	font-size:12px;
 	line-height:28px;
 }

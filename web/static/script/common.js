@@ -51,8 +51,7 @@ function asynchronous_page(opts) {
         $("#" + opts["table_id"]).find("tr:gt(0)").remove();
         //分页内容组装
         if (("data" in res) && res.data.list.length > 0) {
-            console.log('res.data.list ', res.data.list);
-
+            //console.log('res.data.list ', res.data.list);
             $.each(res.data.list, function (i, data) {
                 var $tr = $("<tr></tr>");
                 $.each(opts.columns, function (j, item) {
@@ -212,7 +211,7 @@ function initTree(opt, rootId, lv) {
 
             if (lv == opt.maxLv) {//如果达到最大级别 转换样式
                 $li.children('span:first').addClass('last');
-                if(opt.leafClick){
+                if (opt.leafClick) {
                     $li.children('a').click(function () {
                         opt.clickFun(node.id, lv);
                     })
@@ -320,6 +319,7 @@ function initCheckBoxTree(opt, rootId, lv) {
  */
 function openDialog(obj) {
     var dialogIndex;
+    var random = Math.random();
 
     if (!obj.url) {
         console.log(' url 不能为空 ');
@@ -329,6 +329,7 @@ function openDialog(obj) {
     console.info('open dialog url is :', obj.url);
 
     obj.params = obj.params || {};
+    obj.params['random'] = random;
     $.ajax({
         type: 'get',
         url: obj.url,
@@ -363,3 +364,189 @@ function crypPwd(pwd) {
     var iv = CryptoJS.enc.Utf8.parse('1234567890123456');
     return CryptoJS.AES.encrypt(pwd, key, {iv: iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7});
 }
+
+function createEditor(id, conf) {
+    var editor;
+    conf = conf || {};
+    var default_conf = {
+        width: '95%',
+        height: '300px',
+        allowFileUpload: true,
+        uploadJson: ctx + "/admin/attachment/uploadEditorImg",
+        afterBlur: function () {
+            this.sync();
+        },
+        filterMode: false,
+        items: [
+            'fontname', 'fontsize', 'lineheight', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+            'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', '|', 'emoticons', 'image', 'link'
+        ]
+    };
+    $.extend(default_conf, conf);
+
+    editor = KindEditor.create('textarea[id=' + id + ']', default_conf);
+
+    return editor;
+}
+
+function createUploader(id, conf, businessId) {
+    showAtts(id, businessId);
+    $('#' + id).append('<div id="file' + id + '">附件上传</div>');
+    //多个上传控件公用一个uploadParam
+    if ($('#uploadParam').length <= 0) {
+        $('#' + id).append('<input type="hidden" name="uploadParam" id="uploadParam" value=""/>');
+    }
+
+    conf = conf || {};
+    //是否可上传多个附件
+    var multiple = false;
+    if (conf.multiple) {
+        multiple = true;
+    }
+
+    var extensions = 'xls,xlsx,ppt,pptx,doc,docx,txt,pdf,7z,rar,zip,gif,jpg,jpeg,png,vsd,mpp';
+    var defalt_conf = {
+        attType: '',
+        swf: ctx + '/static/plugins/webupload/Uploader.swf',
+        server: ctx + '/admin/attachment/uploadFile',
+        pick: {
+            id: "#file" + id,
+            multiple: multiple
+        },
+        accept: {
+            extensions: extensions
+        },
+        fileSizeLimit: 52428800, //总文件大小限制
+        auto: true,//是否自动上传
+        resize: false, // 不压缩image
+        chunked: true,	// 开启分片上传
+        duplicate: true //是否可以重复上传
+    };
+    $.extend(defalt_conf, conf);
+
+    var uploader = WebUploader.create(defalt_conf)
+
+    uploader.on('fileQueued', function (file) {
+        //是否上传多个文件
+        if (!defalt_conf.multiple) {
+            $('#fileList' + id + ' li').remove();
+        }
+        var $li = $('<li id="' + file.id + '">' +
+            '<span><a target="_blank">' + file.name + '</a></span>' +
+            '<div class="slide" style="width:100px;" ><div class="progress slidecon"></div></div>' +
+            '&nbsp;&nbsp;<a class="file_del blue_txt">删除</a>' +
+            '</li>');
+        $('#fileList' + id).append($li);
+    });
+
+    // 文件上传过程中创建进度条实时显示。
+    uploader.on('uploadProgress', function (file, percentage) {
+        $("#" + file.id).find(".progress").width(percentage * 100);
+    });
+
+    //上传成功，回显地址和文件名
+    uploader.on('uploadSuccess', function (file, res) {
+        if (res.status != 10000) {
+            $("#" + file.id).find("a:last").after('&nbsp;&nbsp;<span>上传出错</span>');
+        } else {
+            $input = $('<input type="hidden" name="attName" value="' + res.data.attName + '" />' +
+                '<input type="hidden" name="attPath" value="' + res.data.attPath + '" />' +
+                '<input type="hidden" name="attExt" value="' + res.data.attExt + '" />' +
+                '<input type="hidden" name="attSize" value="' + res.data.attSize + '" />' +
+                '<input type="hidden" name="attType" value="' + defalt_conf.attType + '" />');
+            $("#" + file.id).append($input);
+            $("#" + file.id + " a").prop('href', ctx + res.data.attPath);
+        }
+    });
+
+    //上传错误
+    uploader.on('uploadError', function (file, reason) {
+        $("#" + file.id).find("a:last").after('&nbsp;&nbsp;<span>上传出错</span>');
+    });
+
+    //无论上传是否成功 ，取消进度条显示
+    uploader.on('uploadComplete', function (file) {
+        $('#' + file.id).find('.progress').parent().fadeOut();
+    });
+
+    //通用错误
+    uploader.on('uploadComplete', function (file) {
+        $('#' + file.id).find('.progress').parent().fadeOut();
+    });
+
+    //删除文件
+    $('.file_list').on('click', '.file_del', function () {
+        var $parent = $(this).parent();
+        //如果文件上传中，从上传队列中移除
+        if ($parent.find("input[name=filePath]").lenght <= 0) {
+            uploader.removeFile($parent.attr("id"), true);
+        }
+        $parent.remove();
+    });
+}
+
+/**
+ * 显示附件列表
+ */
+function showAtts(id, businessId) {
+    $('#' + id).append('<ul id="fileList' + id + '" class="file_list">');
+    if (businessId) {
+        var url = '/admin/attachment/list';
+        $.post(ctx + url, {businessId: businessId}, function (res) {
+            if (!res.data) {
+                return;
+            }
+            res.data.forEach(function (t) {
+                addLi(t);
+            })
+        },'json');
+    }
+
+    function addLi(data) {
+        var $li = $('<li>' +
+            '<span><a target="_blank" href="' + ctx + data.attPath + '">' + data.attName + '</a></span>' +
+            '&nbsp;&nbsp;<a class="file_del blue_txt">删除</a>' +
+            '<input type="hidden" name="attName" value="' + data.attName + '" />' +
+            '<input type="hidden" name="attPath" value="' + data.attPath + '" />' +
+            '<input type="hidden" name="attExt" value="' + data.attExt + '" />' +
+            '<input type="hidden" name="attSize" value="' + data.attSize + '" />' +
+            '<input type="hidden" name="attType" value="' + data.attType + '" />' +
+            '</li>');
+        $('#fileList' + id).append($li);
+    }
+
+}
+
+function freshUploadParam() {
+    var att_ary = [];
+    $(".file_list li").each(function (i) {
+        var att_obj = {};
+        att_obj["attName"] = $(this).find("input[name=attName]").val();
+        att_obj["attPath"] = $(this).find("input[name=attPath]").val();
+        att_obj["attExt"] = $(this).find("input[name=attExt]").val();
+        att_obj["attSize"] = $(this).find("input[name=attSize]").val();
+        att_obj["attType"] = $(this).find("input[name=attType]").val();
+        att_ary.push(att_obj);
+    })
+    $('#uploadParam').val(JSON.stringify(att_ary));
+}
+
+$(function () {
+    $(document).on('click', '.date_input', function () {
+        var conf = {el: this};
+        var format = $(this).attr('format') || '';
+        if (format) {
+            conf['dateFmt'] = format;
+        }
+
+        var callBackFun = $(this).attr('callBackFun') || '';
+        if (callBackFun) {
+            conf['onpicked'] = function (dp) {
+                window[callBackFun]($(this).val());
+            }
+        }
+        WdatePicker(conf);
+    });
+
+})
+

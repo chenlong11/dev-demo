@@ -25,39 +25,45 @@ import java.io.StringWriter;
 @Slf4j
 public class Exceptionhandler {
 
-
     @ExceptionHandler(value = ParamNullException.class)
     @ResponseBody
     private ResponseResult ParamNullExceptionHandler(HttpServletRequest req, ParamNullException e) {
-        log.info("发生异常 code: {} , msg : {}", e.getCode(), e.getMessage());
+        log.warn("警告 code: {} , msg : {}", e.getCode(), e.getMessage());
         return new ResponseResult(e.getCode(), e.getMessage());
     }
 
     @ExceptionHandler(value = ParamErrException.class)
     @ResponseBody
     private ResponseResult ParamErrExceptionHandler(HttpServletRequest req, ParamErrException e) {
-        log.error("发生异常 code: {} , msg : {}", e.getCode(), e.getMessage());
+        log.warn("警告 code: {} , msg : {}", e.getCode(), e.getMessage());
         return new ResponseResult(e.getCode(), e.getMessage());
     }
 
     @ExceptionHandler(value = SignErrException.class)
     @ResponseBody
     private ResponseResult SignErrExceptionHandler(HttpServletRequest req, SignErrException e) {
-        log.error("发生异常 code: {} , msg : {}", e.getCode(), e.getMessage());
+        log.warn("警告 code: {} , msg : {}", e.getCode(), e.getMessage());
         return new ResponseResult(e.getCode(), e.getMessage());
     }
 
     @ExceptionHandler(value = AuthCodeErrException.class)
     @ResponseBody
     private ResponseResult AuthCodeErrExceptionHandler(HttpServletRequest req, AuthCodeErrException e) {
-        log.error("发生异常 code: {} , msg : {}", e.getCode(), e.getMessage());
+        log.warn("警告 code: {} , msg : {}", e.getCode(), e.getMessage());
         return new ResponseResult(e.getCode(), e.getMessage());
     }
 
     @ExceptionHandler(value = AccountAuthErrException.class)
     @ResponseBody
     private ResponseResult AccountAuthErrExceptionHandler(HttpServletRequest req, AccountAuthErrException e) {
-        log.error("发生异常 code: {} , msg : {}", e.getCode(), e.getMessage());
+        log.warn("警告 code: {} , msg : {}", e.getCode(), e.getMessage());
+        return new ResponseResult(e.getCode(), e.getMessage());
+    }
+
+    @ExceptionHandler(value = NotAllowFileTypeException.class)
+    @ResponseBody
+    private ResponseResult NotAllowFileTypeExceptionHandle(HttpServletRequest req, NotAllowFileTypeException e) {
+        log.warn("警告 code: {} , msg : {}", e.getCode(), e.getMessage());
         return new ResponseResult(e.getCode(), e.getMessage());
     }
 

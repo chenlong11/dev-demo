@@ -3,6 +3,7 @@ package cn.ksource.controller.admin.dic;
 import cn.hutool.core.util.StrUtil;
 import cn.ksource.domain.response.ResponseResult;
 import cn.ksource.domain.dic.SysDicDto;
+import cn.ksource.service.attachment.AttachmentService;
 import cn.ksource.service.dic.SysDicService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 @Controller
@@ -19,6 +21,9 @@ public class DicController {
 
     @Autowired
     private SysDicService dicService;
+
+    @Resource
+    private AttachmentService attachmentService;
 
     @GetMapping("/list")
     public String list(){

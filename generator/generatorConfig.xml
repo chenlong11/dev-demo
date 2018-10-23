@@ -23,21 +23,21 @@
             <property name="forceBigDecimals" value="false" />
         </javaTypeResolver>
 
-        <javaModelGenerator targetPackage="cn.ksource.domain.dept" targetProject=".\src">
+        <javaModelGenerator targetPackage="cn.ksource.domain.attachment" targetProject=".\src">
             <property name="enableSubPackages" value="false" />
             <property name="trimStrings" value="true" />
         </javaModelGenerator>
 
-        <sqlMapGenerator targetPackage="cn.ksource.mapper.dept" targetProject=".\src">
+        <sqlMapGenerator targetPackage="cn.ksource.mapper.attachment" targetProject=".\src">
             <property name="enableSubPackages" value="false" />
         </sqlMapGenerator>
 
-        <javaClientGenerator type="ANNOTATEDMAPPER" targetPackage="cn.ksource.mapper.dept" targetProject=".\src">
+        <javaClientGenerator type="ANNOTATEDMAPPER" targetPackage="cn.ksource.mapper.attachment" targetProject=".\src">
             <property name="enableSubPackages" value="false" />
         </javaClientGenerator>
 
         <!-- 指定数据库表 -->
-        <table schema="" tableName="sys_dept" >
+        <table schema="" tableName="sys_attachment" >
             <!--<columnOverride column="demo_double" javaType="Double" />-->
         </table>
     </context>

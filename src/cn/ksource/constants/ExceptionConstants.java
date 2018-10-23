@@ -40,5 +40,13 @@ public class ExceptionConstants {
      */
     public static final Integer INTERFACE_SIGN_ERROR = 10007;
 
+    /**
+     * 不允许的文件类型
+     */
+    public static final Integer NOT_ALLOW_FILETYPE = 10008;
+
+
+
+
 
 }

@@ -134,7 +134,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<SysUserDto> findListByOrgAndDeptId(Long orgId, Long deptId) {
-        System.out.println("deptId" + deptId);
         List<SysUserDto> sysUserDtos = new ArrayList<>();
         SysUserExample example = new SysUserExample();
         SysUserExample.Criteria criteria = example.createCriteria();

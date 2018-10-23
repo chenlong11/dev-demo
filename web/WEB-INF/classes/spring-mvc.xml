@@ -51,6 +51,7 @@
 
     <!-- 静态资源访问 -->
     <mvc:resources location="/static/" mapping="/static/**"/>
+    <mvc:resources location="/attchment/" mapping="/attchment/**"/>
 
     <!-- 拦截器 -->
     <mvc:interceptors>

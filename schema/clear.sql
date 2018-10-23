@@ -5,6 +5,8 @@ delete from sys_user_role where role_id not in (select id from sys_role where ro
 delete from sys_module_role;
 delete from sys_dept;
 delete from sys_org where lv >1;
+delete from sys_attachment;
 delete from worker_node;
+
 
 

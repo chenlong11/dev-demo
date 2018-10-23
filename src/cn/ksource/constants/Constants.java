@@ -1,6 +1,7 @@
 package cn.ksource.constants;
 
 import cn.hutool.setting.dialect.Props;
+import cn.ksource.initialize.InitProcessor;
 
 /**
  * Created by chenlong
@@ -11,9 +12,12 @@ public class Constants {
 
     public static String HOST_LIST;
 
+    public static String CONTEXT_PATH;
+
     static {
         Props props = new Props("app.properties");
         HOST_LIST = props.getStr("app.hosts");
+        CONTEXT_PATH = InitProcessor.CONTEXT_PATH;
     }
 
     //PC用户登陆标识

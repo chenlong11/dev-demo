@@ -102,13 +102,31 @@ function asynchronous_page(opts) {
 
 //操作成功弹出框
 function sucessMsg(fun) {
-    openMsg('操作成功', fun);
+    fun = fun || function () {
+        return false;
+    };
+    top.layer.confirm('操作成功', {
+        icon: 1 ,
+        btn: ['确认']
+    }, function () {
+        layer.close(layer.index);
+        fun();
+    });
 }
 
 //操作失败弹出框
 function errMsg(title, fun) {
     title = title || '操作失败';
-    openMsg(title, fun);
+    fun = fun || function () {
+        return false;
+    };
+    top.layer.confirm(title, {
+        icon: 2 ,
+        btn: ['确认']
+    }, function () {
+        layer.close(layer.index);
+        fun();
+    });
 }
 
 function openMsg(title, fun) {
@@ -117,6 +135,7 @@ function openMsg(title, fun) {
         return false;
     };
     top.layer.confirm(title, {
+        icon: 0 ,
         btn: ['确认', '取消']
     }, function () {
         layer.close(layer.index);
@@ -336,24 +355,28 @@ function openDialog(obj) {
         data: obj.params,
         async: false,
         success: function (data) {
-            obj = obj || {};
-            var conf = {
-                type: 1,
-                title: " ",
-                area: ['60%', '70%'],
-                btn: ['关闭'],
-                move: false,
-                maxmin: true,
-                scrollbar: false,
-                content: data
-            };
-            $.extend(conf, obj);
-            dialogIndex = top.layer.open(conf);
+            layerOpen(data, obj);
         }
     });
 
     return dialogIndex;
 
+}
+
+function layerOpen(data, conf) {
+    conf = conf || {};
+    var default_conf = {
+        type: 1,
+        title: " ",
+        area: ['60%', '70%'],
+        btn: ['关闭'],
+        move: false,
+        maxmin: true,
+        scrollbar: false,
+        content: data
+    };
+    $.extend(default_conf, conf);
+    dialogIndex = top.layer.open(default_conf);
 }
 
 /**
@@ -365,7 +388,7 @@ function crypPwd(pwd) {
     return CryptoJS.AES.encrypt(pwd, key, {iv: iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7});
 }
 
-function createEditor(id, conf) {
+function createEditor(id, val, conf) {
     var editor;
     conf = conf || {};
     var default_conf = {
@@ -385,11 +408,13 @@ function createEditor(id, conf) {
     $.extend(default_conf, conf);
 
     editor = KindEditor.create('textarea[id=' + id + ']', default_conf);
-
+    if (val) {
+        editor.html(val);
+    }
     return editor;
 }
 
-function createUploader(id, conf, businessId) {
+function createUploader(id, businessId, conf) {
     showAtts(id, businessId);
     $('#' + id).append('<div id="file' + id + '">附件上传</div>');
     //多个上传控件公用一个uploadParam
@@ -499,7 +524,7 @@ function showAtts(id, businessId) {
             res.data.forEach(function (t) {
                 addLi(t);
             })
-        },'json');
+        }, 'json');
     }
 
     function addLi(data) {
@@ -531,22 +556,237 @@ function freshUploadParam() {
     $('#uploadParam').val(JSON.stringify(att_ary));
 }
 
-$(function () {
-    $(document).on('click', '.date_input', function () {
+function createDatePicker(id, formar, callBackFun) {
+    $('#' + id).on('click', function () {
         var conf = {el: this};
-        var format = $(this).attr('format') || '';
+        var format = formar || 'yyyy-MM-dd';
         if (format) {
             conf['dateFmt'] = format;
         }
-
-        var callBackFun = $(this).attr('callBackFun') || '';
         if (callBackFun) {
             conf['onpicked'] = function (dp) {
-                window[callBackFun]($(this).val());
+                callBackFun($(this).val());
             }
         }
         WdatePicker(conf);
-    });
+    })
+}
 
-})
+/**
+ * 树形选择器
+ */
+function getTreeSelector(conf) {
+    var treeSelector = {
+        conf: {
+            _this:this,
+            url: '',
+            params: {},
+            nodeName: 'name',
+            btn: ['确定','关闭'],
+            yes: function (index, layero) {
+                var ary = _this.getSelectData();
+                _this.callBackFun(ary);
+                //关闭弹出框
+                layer.close(index);
+            }
+        },
+        callBackFun: function (ary) {
+        } ,
+        setConf: function (conf) {
+            conf = conf || {};
+            if(conf.url){
+                this.conf.url = conf.url;
+            }
+            if(conf.params){
+                this.conf.params = conf.params;
+            }
+            if(conf.nodeName){
+                this.conf.nodeName = conf.nodeName;
+            }
+            if(conf.callbackFun){
+                this.callBackFun = conf.callbackFun;
+            }
+        },
+        createTree: function (conf) {
+            if (!this.conf.url) {
+                console.log('url can not be empty');
+                return;
+            }
+            _this = this;
+            $.post(this.conf.url,this.conf.params,function (res) {
+                if(res.status == 10000) {
+                    var $div = _this.createContainer();
+                    var $root = $div.find('.tree_selector:first');
+                    if (res.data) {
+                        for (var i = 0; i < res.data.length; i++) {
+                            res.data[i]['lv'] = 1;
+                            _this.addNode($root, res.data[i]);
+                        }
+                    }
+                    _this.initEvent();
+                    layerOpen($div.html(),_this.conf);
+                }
+            },'json');
+        },
+        createContainer: function () {
+            var $div =
+                $('<div class="choose">' +
+                    '<div class="chooseLeft">' +
+                        '<div class="choose-ser">' +
+                            '<input type="text" class="choose-serInput" /><input type="button" value="" class="choose-serBtn" />' +
+                        '</div>' +
+                        '<div class="chooseTree">' +
+                            '<div class="tree_selector" id="-1" pid="">' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="chooseRight" id="right">' +
+                        '<h2>已选列表</h2>' +
+                        '<div class="zw">请从左侧选择人员</div>' +
+                    '</div>' +
+                '</div>');
+            return $div;
+        },
+        addNode: function ($pnode, node) {
+            node['isParent'] = node.isParent || false;
+            if ($pnode.find('ul').length <= 0) {
+                $pnode.append('<ul></ul>');
+            }
+            //默认隐藏第一层以外的所有节点
+            if(node.lv > 1){
+                $pnode.find('ul').hide()
+            }
+
+            $pnode = $pnode.find('ul:first');
+
+            var $node;
+            if (node.isParent) {
+                $node = $('<li id = "' + node.id + '" pid = "' + node.pid + '" class="folder"><em></em><span></span>' + node[this.conf.nodeName] + '</li>')
+                $pnode.append($node);
+
+                if(!node.children){
+                    return;
+                }
+
+                for (var i = 0; i < node.children.length; i++) {
+                    node.children[i]['lv'] = parseInt(node.lv) + 1;
+                    this.addNode($node, node.children[i]);
+                }
+            } else {
+                $node = $('<li id = "' + node.id + '" pid = "' + node.pid + '" class="leaf"><em class="last"></em><span class="last"></span><a>' + node[this.conf.nodeName] + '</a></li>');
+                $pnode.append($node);
+            }
+        },
+        appendToRight: function(id,name) {
+            $('.chooseRight .zw').hide();
+            // for(var i =0;i<30;i++){
+                var $p = $('<p id="selected'+id+'"><span><a class="del">删除</a></span><a></a>' + name + '</p>');
+                $(".chooseRight#right").append($p);
+            // }
+
+        },
+        removeFromRight: function(id,name) {
+            $('#selected' + id).closest('p').remove();
+        },
+        initEvent: function(){
+            var _this = this;
+            $(document).off('click', '.tree_selector .folder');
+            $(document).off('click', '.tree_selector .leaf');
+            $(document).off('mouseover', '.chooseRight p');
+            $(document).off('mouseout', '.chooseRight p');
+            $(document).off('click', '.chooseRight p .del');
+            $(document).off('click', '.choose-serBtn');
+
+            $(document).on('click','.tree_selector .folder',function(event) {
+                if($(this).find('ul:first').is(':hidden')){
+                    $(this).find('ul:first').show();
+                    $(this).addClass('cur');
+                }else{
+                    $(this).find('ul:first').hide();
+                    $(this).removeClass('cur');
+                }
+                event.stopPropagation();
+            });
+
+            $(document).on('click','.tree_selector .leaf',function(event) {
+                if($(this).find('a').hasClass('already')){
+                    $(this).find('span').removeClass("last2");
+                    $(this).find('a').removeClass("already");
+                    _this.removeFromRight($(this).prop('id'));
+                } else {
+                    $(this).find('span').addClass("last2");
+                    $(this).find('a').addClass("already");
+                    _this.appendToRight($(this).prop('id'), $(this).find('a').text());
+                }
+                event.stopPropagation();
+            });
+
+            $(document).on('mouseover','.chooseRight p',function(event) {
+                $(this).addClass("cur");
+            });
+
+            $(document).on('mouseout','.chooseRight p',function(event) {
+                $(this).removeClass("cur");
+            });
+
+            $(document).on('click','.chooseRight p .del',function(event) {
+                var id = $(this).closest('p').prop('id');
+                id = id.substring(8);
+                $('.tree_selector #' + id +' span').removeClass("last2");
+                $('.tree_selector #' + id +' a').removeClass("already");
+                $(this).closest('p').remove();
+            });
+
+            $(document).on('click','.choose-serBtn',function(event) {
+                var text = $.trim($('.choose-serInput').val());
+                if(text){
+                    _this.search(text);
+                }else{
+                    _this.refreshTree(text);
+                }
+
+            });
+        },
+        expendPNode: function(id) {
+            var pid = $('.tree_selector #' + id).attr('pid');
+            if($('.tree_selector #' + pid).length > 0 ) {
+                $('.tree_selector #' + pid).show();
+                $('.tree_selector #' + pid + ' ul').show();
+                $('.tree_selector #' + pid).addClass('cur');
+                var fpid = $('.tree_selector #' + pid).attr('pid');
+                if($('.tree_selector #' + fpid).length > 0 ){
+                    this.expendPNode(pid);
+                }
+            }
+        },
+        search: function(text) {
+            var _this = this;
+            $('.tree_selector li').hide();
+            $('.leaf').each(function () {
+                if($(this).text().indexOf(text)>=0) {
+                    $(this).show();
+                    _this.expendPNode($(this).prop('id'));
+                }
+            })
+        },
+        refreshTree: function () {
+            $('.tree_selector ul').hide();
+            $('.tree_selector li').show();
+            $('.tree_selector ul:first').show();
+        },
+        getSelectData: function(){
+            var ary = [];
+            $('.chooseRight p').each(function () {
+                var id = $(this).closest('p').prop('id');
+                id = id.substring(8);
+                var name = $(this).text().substring(2);
+                ary.push({'id':id,'name':name});
+            });
+            return ary;
+        }
+    }
+    treeSelector.setConf(conf);
+    treeSelector.createTree(conf);
+}
+
 

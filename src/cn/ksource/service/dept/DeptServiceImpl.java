@@ -2,13 +2,11 @@ package cn.ksource.service.dept;
 
 import cn.ksource.domain.dept.SysDept;
 import cn.ksource.domain.dept.SysDeptDto;
-import cn.ksource.domain.dept.SysDeptExample;
 import cn.ksource.mapper.dept.SysDeptManager;
 import cn.ksource.util.TreeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -20,21 +18,7 @@ public class DeptServiceImpl implements DeptService {
 
     @Override
     public List<SysDeptDto> findListByOrgId(Long orgId) {
-        ArrayList<SysDeptDto> sysDeptDtos = new ArrayList<>();
-
-        SysDeptExample example = new SysDeptExample();
-        SysDeptExample.Criteria criteria = example.createCriteria();
-        criteria.andOrgIdEqualTo(orgId);
-        criteria.andStateEqualTo(Byte.valueOf("1"));
-        example.setOrderByClause("id desc");
-
-        List<SysDept> sysDepts = deptManager.selectByExample(example);
-        if (sysDepts != null) {
-            for (SysDept sysDept : sysDepts) {
-                sysDeptDtos.add(SysDeptDto.domain2dto(sysDept));
-            }
-        }
-        return sysDeptDtos;
+        return deptManager.getListByOrgId(orgId);
     }
 
     @Override

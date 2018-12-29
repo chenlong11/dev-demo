@@ -1,3 +1,4 @@
+
 /*
     分页方法
  */
@@ -9,13 +10,17 @@ function paging(options) {
     var opts = $.extend({}, defaults, options);
     opts["table_id"] = opts["id"] + "_layer_table";
     opts["page_id"] = opts["id"] + "_layer_page";
+    opts["detail_id"] = opts["id"] + "_layer_detail";
     //删除页面已存在的容器
     $("#" + opts["table_id"]).remove();
     $("#" + opts["page_id"]).remove();
+    $("#" + opts["detail_id"]).remove();
     //追加table容器
     $("#" + opts["id"]).append('<table class="' + opts["class"] + '" style="' + opts["style"] + '" id="' + opts["table_id"] + '"></table>');
     //追加分页容器
-    $("#" + opts["table_id"]).after('<div id="' + opts["page_id"] + '"></div>');
+    $("#" + opts["table_id"]).after('<div id="' + opts["page_id"] + '" class="layer_page_yq"></div>');
+    //总页数条数
+    $("#" + opts["page_id"]).after('<span id="' + opts["detail_id"] + '" style="color:#666;font-size:12px;"></span>');
     //追加th
     if (("columns" in options) && options.columns.length > 0) {
         var $tr = $("<tr class='title'></tr>");
@@ -51,31 +56,12 @@ function asynchronous_page(opts) {
         $("#" + opts["table_id"]).find("tr:gt(0)").remove();
         //分页内容组装
         if (("data" in res) && res.data.list.length > 0) {
-            //console.log('res.data.list ', res.data.list);
-            $.each(res.data.list, function (i, data) {
-                var $tr = $("<tr></tr>");
-                $.each(opts.columns, function (j, item) {
-                    var $td = $("<td></td>");
-                    if ("class" in item) {//td class
-                        $td.addClass(item["class"])
-                    }
-                    if ("customize" in item) {//自定义td内容
-                        var index = ((opts["curr"] - 1) * opts.pageSize) + i + 1;
-                        $td.html(item.customize(index, data));
-                    } else {
-                        if ("field" in item) {
-                            if (item.field == '_index') {
-                                var index = ((opts["curr"] - 1) * opts.pageSize) + i + 1;
-                                $td.text(index);
-                            } else {
-                                $td.text(data[item.field]);
-                            }
-                        }
-                    }
-                    $tr.append($td);
-                });
-                $("#" + opts["table_id"]).append($tr);
-            });
+            if(opts.showData){
+            	var startIndex = ((opts["curr"] - 1) * opts.pageSize)+1;
+                opts.showData(res.data.list,startIndex);
+            }else{
+                defadult_show_data(res.data.list,opts);
+            }
         } else {
             var $tr = $('<tr><td style="text-align: center;" colspan="' + opts.columns.length + '"><div class="serzw">暂无数据</div></td></tr>');
             $("#" + opts["table_id"]).append($tr);
@@ -85,10 +71,12 @@ function asynchronous_page(opts) {
 
         //显示分页
         laypage({
-            cont: opts["page_id"], //容器。值支持id名、原生dom对象，jquery对象。【如该容器为】：<div id="page1"></div>
-            pages: res.data.lastPage, //通过后台拿到的总页数
+            cont: opts["page_id"], //容器。值支持id名、原生dom对象，jquery对象。
+            pages: res.data.pages, //通过后台拿到的总页数
+            count: res.data.total, //通过后台拿到的总条数
             curr: opts.curr || 1, //当前页
             skip: true,
+            
             jump: function (obj, first) { //触发分页后的回调
                 if (!first) { //点击跳页触发函数自身，并传递当前页：obj.curr
                     opts["curr"] = obj.curr;
@@ -96,8 +84,39 @@ function asynchronous_page(opts) {
                 }
             }
         });
+        if (res.data.pages > 1) {
+            $('#'+opts["detail_id"]).html('共'+res.data.pages + '页' + res.data.total + '条');
+        }
         //loaded($("#" + opts.id));
     }, 'json');
+}
+
+function defadult_show_data(datas, opts){
+    //console.log('datas ', datas);
+    $.each(datas, function (i, data) {
+        var $tr = $("<tr></tr>");
+        $.each(opts.columns, function (j, item) {
+            var $td = $("<td></td>");
+            if ("class" in item) {//td class
+                $td.addClass(item["class"])
+            }
+            if ("customize" in item) {//自定义td内容
+                var index = ((opts["curr"] - 1) * opts.pageSize) + i + 1;
+                $td.html(item.customize(index, data));
+            } else {
+                if ("field" in item) {
+                    if (item.field == '_index') {
+                        var index = ((opts["curr"] - 1) * opts.pageSize) + i + 1;
+                        $td.text(index);
+                    } else {
+                        $td.text(data[item.field]);
+                    }
+                }
+            }
+            $tr.append($td);
+        });
+        $("#" + opts["table_id"]).append($tr);
+    });
 }
 
 //操作成功弹出框
@@ -349,13 +368,14 @@ function openDialog(obj) {
 
     obj.params = obj.params || {};
     obj.params['random'] = random;
+    obj.types=obj.types || 'get';
     $.ajax({
-        type: 'get',
+        type: obj.types,
         url: obj.url,
         data: obj.params,
         async: false,
         success: function (data) {
-            layerOpen(data, obj);
+            dialogIndex = layerOpen(data, obj);
         }
     });
 
@@ -376,7 +396,7 @@ function layerOpen(data, conf) {
         content: data
     };
     $.extend(default_conf, conf);
-    dialogIndex = top.layer.open(default_conf);
+    return top.layer.open(default_conf);
 }
 
 /**
@@ -423,13 +443,23 @@ function createUploader(id, businessId, conf) {
     }
 
     conf = conf || {};
+    
     //是否可上传多个附件
     var multiple = false;
     if (conf.multiple) {
-        multiple = true;
+        multiple = conf.multiple;
     }
 
+
     var extensions = 'xls,xlsx,ppt,pptx,doc,docx,txt,pdf,7z,rar,zip,gif,jpg,jpeg,png,vsd,mpp';
+    var mimeTypes = '.xls,.xlsx,.ppt,.pptx,.doc,.docx,.txt,.pdf,.7z,.rar,.zip,.gif,.jpg,.jpeg,.png,.vsd,.mpp';
+    if(conf.extensions){
+    	extensions = conf.extensions;
+    	
+    	var reg = new RegExp( ',' , "g" )
+    	var newstr = extensions.replace( reg , ',.' );
+        mimeTypes = '.' +newstr;
+    }
     var defalt_conf = {
         attType: '',
         swf: ctx + '/static/plugins/webupload/Uploader.swf',
@@ -439,7 +469,8 @@ function createUploader(id, businessId, conf) {
             multiple: multiple
         },
         accept: {
-            extensions: extensions
+            extensions: extensions,
+            mimeTypes: mimeTypes
         },
         fileSizeLimit: 52428800, //总文件大小限制
         auto: true,//是否自动上传
@@ -447,13 +478,15 @@ function createUploader(id, businessId, conf) {
         chunked: true,	// 开启分片上传
         duplicate: true //是否可以重复上传
     };
-    $.extend(defalt_conf, conf);
+    //$.extend(defalt_conf, conf);
 
+    console.log(JSON.stringify(defalt_conf))
+    
     var uploader = WebUploader.create(defalt_conf)
 
     uploader.on('fileQueued', function (file) {
         //是否上传多个文件
-        if (!defalt_conf.multiple) {
+        if (!defalt_conf.pick.multiple) {
             $('#fileList' + id + ' li').remove();
         }
         var $li = $('<li id="' + file.id + '">' +
@@ -480,13 +513,26 @@ function createUploader(id, businessId, conf) {
                 '<input type="hidden" name="attSize" value="' + res.data.attSize + '" />' +
                 '<input type="hidden" name="attType" value="' + defalt_conf.attType + '" />');
             $("#" + file.id).append($input);
-            $("#" + file.id + " a").prop('href', ctx + res.data.attPath);
+	            $("#" + file.id + " a:first").prop('href', ctx + res.data.attPath);
         }
     });
 
     //上传错误
     uploader.on('uploadError', function (file, reason) {
         $("#" + file.id).find("a:last").after('&nbsp;&nbsp;<span>上传出错</span>');
+    });
+
+    //上传错误
+    uploader.on('error', function (reason) {
+        if (reason == 'Q_TYPE_DENIED') {
+            layer.msg("上传的文件格式不正确!");
+        }
+        if (reason == 'Q_EXCEED_SIZE_LIMIT') {
+            layer.msg("上传的文件过大!");
+        }
+        if (reason == 'Q_EXCEED_NUM_LIMIT') {
+            layer.msg("上传的文件过多!");
+        }
     });
 
     //无论上传是否成功 ，取消进度条显示
@@ -500,13 +546,14 @@ function createUploader(id, businessId, conf) {
     });
 
     //删除文件
-    $('.file_list').on('click', '.file_del', function () {
+    $('.file_list').on('click', '.file_del', function (event) {
         var $parent = $(this).parent();
         //如果文件上传中，从上传队列中移除
         if ($parent.find("input[name=filePath]").lenght <= 0) {
             uploader.removeFile($parent.attr("id"), true);
         }
         $parent.remove();
+        event.stopPropagation();
     });
 }
 
@@ -789,4 +836,88 @@ function getTreeSelector(conf) {
     treeSelector.createTree(conf);
 }
 
+/**
+ * 下拉列表
+ */
+function select_option(id,flag,option_value,option_text,data) {
+    var optionHtml = "";
+    if (flag == "y") {
+        optionHtml = "<option value=''>请选择</option>";
+    }
+    if (data) {
+        var $data = eval("("+data+")");
+        $.each($data,function(i,item) {
+            optionHtml += "<option value='"+item[option_value]+"'>"+item[option_text]+"</option>";
+        });
+        $("#"+id).html(optionHtml);
+    } else {
+        $("#"+id).html(optionHtml);
+    }
+}
+/**
+ * 下拉列表
+ */
+function select_option_value(id,flag,option_value,option_text,data,val) {
+    var optionHtml = "";
+    if (flag == "y") {
+        optionHtml = "<option value=''>请选择</option>";
+    }
+    if (data) {
+        var $data = eval("("+data+")");
+        $.each($data,function(i,item) {
+            if(val=item[option_value]){
+                optionHtml += "<option value='"+item[option_value]+"' selected>"+item[option_text]+"</option>";
+            }else{
+                optionHtml += "<option value='"+item[option_value]+"'>"+item[option_text]+"</option>";
+            }
 
+        });
+        $("#"+id).html(optionHtml);
+    } else {
+        $("#"+id).html(optionHtml);
+    }
+}
+
+
+function call_back(fid,id,flag,option_value,option_text,url) {
+    var v = $("#"+fid).find("option:selected").val();
+    if (v) {
+        $.post(url,{"pid":v},function(data) {
+            select_option(id,flag,option_value,option_text,data);
+        });
+    } else {
+        var optionHtml = "<option value=''>请选择</option>";
+        $("#"+id).html(optionHtml);
+    }
+}
+
+
+function initByDic(id, dicCode, val) {
+    $.post('/admin/dic/data', {'dicCode': dicCode}, function (res) {
+        if (res.status == 10000) {
+            $('#' + id).empty();
+            $('#' + id).append('<option value="">请选择</option>')
+            res.data.forEach(function (item) {
+                if (val == item.dataCode) {
+                    $('#' + id).append('<option value="' + item.dataCode + '" selected>' + item.dataVal + '</option>')
+                } else {
+                    $('#' + id).append('<option value="' + item.dataCode + '">' + item.dataVal + '</option>')
+                }
+            })
+        }
+    },'json')
+}
+
+//列表通用样式更多按钮list_btnmore
+function commonListBtn(){
+  $('div.list_btnmore').live("mouseover",function(){
+		$(this).css('z-index', '9999');
+		$(this).children('a.list_btnmore_btn').addClass('focus');
+	    $(this).children('div.list_btnmore_con').show();
+	});
+  $('div.list_btnmore').live("mouseout",function(){
+		$(this).css('z-index', '0');
+		$(this).children('a.list_btnmore_btn').removeClass('focus');
+	    $(this).children('div.list_btnmore_con').hide();
+	});
+}

@@ -17,11 +17,7 @@ public interface OrgService {
 
     List<Map> findOrgTree();
 
-    List<SysOrgDto> findListByPid(Long pid);
-
     SysOrgDto getById(Long id);
-
-    SysOrgDto getByPid(Long pid);
 
     Long save(SysOrgDto orgDto);
 
@@ -30,5 +26,7 @@ public interface OrgService {
     void deleteById(Long id);
 
     List<Map> findOrgTreeByUserId(Long userId);
+
+    List<SysOrgDto> findListByPid(Long pid);
 
 }

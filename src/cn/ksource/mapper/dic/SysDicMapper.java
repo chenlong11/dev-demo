@@ -2,19 +2,10 @@ package cn.ksource.mapper.dic;
 
 import cn.ksource.domain.dic.SysDic;
 import cn.ksource.domain.dic.SysDicExample;
-import java.util.List;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.DeleteProvider;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.InsertProvider;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.SelectProvider;
-import org.apache.ibatis.annotations.Update;
-import org.apache.ibatis.annotations.UpdateProvider;
+import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.type.JdbcType;
+
+import java.util.List;
 
 public interface SysDicMapper {
     @SelectProvider(type=SysDicSqlProvider.class, method="countByExample")
@@ -24,8 +15,8 @@ public interface SysDicMapper {
     int deleteByExample(SysDicExample example);
 
     @Delete({
-        "delete from sys_dic",
-        "where id = #{id,jdbcType=BIGINT}"
+            "delete from sys_dic",
+            "where id = #{id,jdbcType=BIGINT}"
     })
     int deleteByPrimaryKey(Long id);
 

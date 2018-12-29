@@ -61,9 +61,8 @@ public class RoleController {
     @ResponseBody
     public ResponseResult postOrgList(Long pid, int curPage, int pageSize) {
         PageHelper.startPage(curPage, pageSize);
-        List<SysOrgDto> orgs = orgService.findListByPid(pid);
-        PageInfo<SysOrgDto> pageInfo = new PageInfo<SysOrgDto>(orgs);
-        return new ResponseResult(pageInfo);
+        List<SysOrgDto> list = orgService.findListByPid(pid);
+        return new ResponseResult(new PageInfo<SysOrgDto>(list));
     }
 
     @GetMapping("/list")

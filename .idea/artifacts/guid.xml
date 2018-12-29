@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="guid">
+    <output-path>D:/</output-path>
+    <root id="archive" name="guid.jar">
+      <element id="dir-copy" path="$PROJECT_DIR$/web/WEB-INF/classes" />
+    </root>
+  </artifact>
+</component>

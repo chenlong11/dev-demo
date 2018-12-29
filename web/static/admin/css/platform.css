@@ -10144,3 +10144,5 @@ a.operating_conmon .noBg{
 .chooseRight p.leader{background-image:url(../images/leader.png);background-position:60px center;background-repeat: no-repeat;}
 
 .chooseRight .zw{background:url(../images/selector_zw.png) center top no-repeat;padding-top:60px;text-align:center;width:120px;margin:40px auto 0 auto;color:#999;font-size:12px;font-family:microsoft yahei;}
+
+.layer_page_yq{padding-top:10px;}

@@ -3,6 +3,8 @@ package cn.ksource.mapper.org;
 import cn.ksource.domain.org.SysOrgDto;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.List;
+
 public interface SysOrgManager extends SysOrgMapper {
 
     @Select({
@@ -10,9 +12,9 @@ public interface SysOrgManager extends SysOrgMapper {
             "id, lv1_id, lv1_name, lv2_id, lv2_name, lv3_id, lv3_name, org_name, org_code, ",
             "lv, pid, org_path, sn, create_date, create_time, state",
             "from sys_org",
-            "where pid = #{id,jdbcType=BIGINT}"
+            "where pid = #{id,jdbcType=BIGINT} and state=1 order by id desc"
     })
-    SysOrgDto getByPid(Long pid);
+    List<SysOrgDto> getListByPid(Long pid);
 
     @Select({
             "select",
@@ -22,4 +24,5 @@ public interface SysOrgManager extends SysOrgMapper {
             "where g.id = u.org_id and u.id = #{id,jdbcType=BIGINT}"
     })
     SysOrgDto getListByUserId(Long userId);
+
 }

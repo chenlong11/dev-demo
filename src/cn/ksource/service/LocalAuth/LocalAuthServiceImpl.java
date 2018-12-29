@@ -72,6 +72,10 @@ public class LocalAuthServiceImpl implements LocalAuthService {
         }
         //权限
         List<SysModuleDto> modules = sysModuleService.findListByUserId(userId);
+        for (SysModuleDto module : modules) {
+            sysUserDto.getModuleCodes().add(module.getModuleCode());
+        }
+
         if (modules != null) {
             sysUserDto.setModules(TreeUtil.createTreeByList(modules));
         }

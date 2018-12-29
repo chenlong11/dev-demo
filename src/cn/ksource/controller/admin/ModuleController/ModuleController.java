@@ -46,8 +46,7 @@ public class ModuleController {
     public ResponseResult postlist(String pid,int curPage,int pageSize) {
         PageHelper.startPage(curPage,pageSize);
         List<SysModuleDto> modules = moduleService.findListByPid(pid);
-        PageInfo<SysModuleDto> pageInfo = new PageInfo<SysModuleDto>(modules);
-        return new ResponseResult(pageInfo);
+        return new ResponseResult(new PageInfo<SysModuleDto>(modules));
     }
 
     @GetMapping(value = {"/edit","/edit/{id}"})

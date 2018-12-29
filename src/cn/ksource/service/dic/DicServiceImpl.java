@@ -1,7 +1,6 @@
 package cn.ksource.service.dic;
 
 import cn.ksource.domain.dic.SysDicDto;
-import cn.ksource.domain.dic.SysDicExample;
 import cn.ksource.domain.dicData.SysDicData;
 import cn.ksource.domain.dicData.SysDicDataDto;
 import cn.ksource.domain.dicData.SysDicDataExample;
@@ -24,19 +23,7 @@ public class DicServiceImpl implements SysDicService {
 
     @Override
     public List<SysDicDto> getDicList() {
-
-        List<SysDicDto> sysDicDtos = new ArrayList<SysDicDto>();
-
-        SysDicExample example = new SysDicExample();
-        example.createCriteria().andStateEqualTo(Byte.valueOf("1"));
-        List<cn.ksource.domain.dic.SysDic> sysDics = dicManager.selectByExample(example);
-
-        if (sysDics != null) {
-            for (cn.ksource.domain.dic.SysDic sysDic : sysDics) {
-                sysDicDtos.add(SysDicDto.domain2dto(sysDic));
-            }
-        }
-        return sysDicDtos;
+        return dicManager.getListByState();
     }
 
     @Override

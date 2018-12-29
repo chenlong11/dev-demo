@@ -46,18 +46,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public List<SysRoleDto> findListByOrgId(Long orgId) {
-        ArrayList<SysRoleDto> sysRoleDtos = new ArrayList<>();
-
-        SysRoleExample example = new SysRoleExample();
-        SysRoleExample.Criteria criteria = example.createCriteria();
-        criteria.andOrgIdEqualTo(orgId);
-        criteria.andStateEqualTo(Byte.valueOf("1"));
-        example.setOrderByClause("sn asc, id desc");
-        List<SysRole> sysRoles = roleManager.selectByExample(example);
-        for (SysRole sysRole : sysRoles) {
-            sysRoleDtos.add(SysRoleDto.domain2dto(sysRole));
-        }
-        return sysRoleDtos;
+        return roleManager.getListByOrgId(orgId);
     }
 
     @Override

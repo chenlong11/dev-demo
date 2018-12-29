@@ -55,18 +55,21 @@ public class AdminLoginFilter implements Filter{
             List<Map> modules = sysUserDto.getModules();
             String lv1moduleCode = lv3moduleCode.substring(0,lv3moduleCode.indexOf(":"));
             String lv2moduleCode = lv3moduleCode.substring(0,lv3moduleCode.lastIndexOf(":"));
-            for (Map lv1module : modules) {
-                if (Convert.toStr(lv1module.get("moduleCode")).equals(lv1moduleCode)) {
-                    nopermisson = false;
-                    request.setAttribute("lv1module", lv1module);
-                    request.setAttribute("lv2moduleCode", lv2moduleCode);
-                    request.setAttribute("lv3moduleCode", lv3moduleCode);
-                    break;
+
+            if(sysUserDto.getModuleCodes().contains(lv3moduleCode)){
+                nopermisson = false;
+                for (Map lv1module : modules) {
+                    if (Convert.toStr(lv1module.get("moduleCode")).equals(lv1moduleCode)) {
+                        request.setAttribute("lv1module", lv1module);
+                        request.setAttribute("lv2moduleCode", lv2moduleCode);
+                        request.setAttribute("lv3moduleCode", lv3moduleCode);
+                        break;
+                    }
                 }
             }
+
             if(nopermisson){//没有权限
                 log.warn(" nopermission ！ , request uri is : {} ", uri);
-
                 RequestDispatcher dispatcher = request.getRequestDispatcher("/admin/nopermission.html");
                 dispatcher.forward(request, response);
                 return;

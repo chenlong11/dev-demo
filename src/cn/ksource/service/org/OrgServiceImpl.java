@@ -45,32 +45,20 @@ public class OrgServiceImpl implements OrgService {
         return TreeUtil.createTreeByList(findAllByStatus(1));
     }
 
-    @Override
-    public List<SysOrgDto> findListByPid(Long pid) {
-        ArrayList<SysOrgDto> sysOrgDtos = new ArrayList<>();
 
+    private List<SysOrg> getListByPid(Long pid) {
         SysOrgExample sysOrgExample = new SysOrgExample();
         SysOrgExample.Criteria criteria = sysOrgExample.createCriteria();
         criteria.andPidEqualTo(pid);
         criteria.andStateEqualTo(Byte.valueOf("1"));
         sysOrgExample.setOrderByClause(" create_date desc ");
-        List<SysOrg> sysOrgs = orgManager.selectByExample(sysOrgExample);
-
-        for (SysOrg sysOrg : sysOrgs) {
-            sysOrgDtos.add(SysOrgDto.domain2dto(sysOrg));
-        }
-        return sysOrgDtos;
+        return orgManager.selectByExample(sysOrgExample);
     }
 
     @Override
     public SysOrgDto getById(Long id) {
         SysOrg sysOrg = orgManager.selectByPrimaryKey(id);
         return SysOrgDto.domain2dto(sysOrg);
-    }
-
-    @Override
-    public SysOrgDto getByPid(Long pid) {
-        return orgManager.getByPid(pid);
     }
 
     @Override
@@ -141,7 +129,6 @@ public class OrgServiceImpl implements OrgService {
     @Override
     public List<Map> findOrgTreeByUserId(Long userId) {
         SysOrgDto org = orgManager.getListByUserId(userId);
-
         SysOrgExample sysOrgExample = new SysOrgExample();
         SysOrgExample.Criteria criteria = sysOrgExample.createCriteria();
         criteria.andOrgPathLike(org.getOrgPath() + "%")
@@ -151,5 +138,9 @@ public class OrgServiceImpl implements OrgService {
         return TreeUtil.createTreeByList(orgManager.selectByExample(sysOrgExample));
     }
 
+    @Override
+    public List<SysOrgDto> findListByPid(Long pid) {
+        return orgManager.getListByPid(pid);
+    }
 
 }

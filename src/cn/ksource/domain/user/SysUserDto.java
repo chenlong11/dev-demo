@@ -6,10 +6,7 @@ import lombok.Data;
 import org.springframework.beans.BeanUtils;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by chenlong
@@ -24,6 +21,8 @@ public class SysUserDto extends SysUser implements Serializable {
     private List<SysRoleDto> roles = new ArrayList<SysRoleDto>();
 
     private List<Map> modules = new ArrayList<Map>();
+
+    private Set<String> moduleCodes = new HashSet<String>();
 
     public static SysUserDto domain2dto(SysUser domain) {
         SysUserDto dto = new SysUserDto();

@@ -35,8 +35,7 @@ public class DicController {
     public ResponseResult postList(int curPage,int pageSize){
         PageHelper.startPage(curPage, pageSize);
         List<SysDicDto> dicList = dicService.getDicList();
-        PageInfo<SysDicDto> pageInfo = new PageInfo<SysDicDto>(dicList);
-        return new ResponseResult(pageInfo);
+        return new ResponseResult(new PageInfo<SysDicDto>(dicList));
     }
 
     @GetMapping(value = {"/edit","/edit/{id}"})
@@ -65,6 +64,12 @@ public class DicController {
     public ResponseResult del(@PathVariable("id") Long id) {
         dicService.delDicById(id);
         return new ResponseResult();
+    }
+
+    @PostMapping("/data")
+    @ResponseBody
+    public ResponseResult getDataByDicCode(String dicCode) {
+        return new ResponseResult(dicService.getDataListByCode(dicCode));
     }
 
 }

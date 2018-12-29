@@ -101,7 +101,7 @@ public class UserServiceImpl implements UserService {
 
         List<SysUserDto> users = findListByOrgId(orgId);
         for (SysUserDto user : users) {
-            if(user.getDeptId().equals(-1L)){
+            if (user.getDeptId().equals(-1L)) {
                 user.setDeptId(10000L);
             }
             if (deptSet.get(user.getDeptId()) != null) {
@@ -134,18 +134,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<SysUserDto> findListByOrgAndDeptId(Long orgId, Long deptId) {
-        List<SysUserDto> sysUserDtos = new ArrayList<>();
-        SysUserExample example = new SysUserExample();
-        SysUserExample.Criteria criteria = example.createCriteria();
-        criteria.andStateEqualTo(Byte.valueOf("1"))
-                .andOrgIdEqualTo(orgId)
-                .andDeptIdEqualTo(deptId);
-        example.setOrderByClause(" sn asc, id desc ");
-        List<SysUser> sysUsers = userManager.selectByExample(example);
-        for (SysUser sysUser : sysUsers) {
-            sysUserDtos.add(SysUserDto.domain2dto(sysUser));
-        }
-        return sysUserDtos;
+        return userManager.getListByOrgAndDeptId(orgId, deptId);
     }
 
 }
